@@ -1,0 +1,14 @@
+export type AlgInput = {
+    data1: string
+}
+
+export type AlgOutput = {
+  platesQuantity: number
+}
+
+export function AlgPlatesCalc(params: AlgInput): AlgOutput {
+  const result: AlgOutput = {
+    platesQuantity: 4,
+  }
+  return result;
+}
