@@ -1,4 +1,7 @@
 export function assertEqual(obj1: any, obj2: any): boolean {
+  if (typeof obj1 == "number" && typeof obj2 == "number") {
+    return Math.abs(obj1 - obj2) < 0.0001
+}
     if (obj1 === obj2) return true;
   
     if (obj1 == null || typeof obj1 != "object" ||

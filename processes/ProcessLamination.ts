@@ -1,7 +1,7 @@
 // Рулонная ламинация листов с двух или с одной стороны
 import { roundDigits } from "../utils/roundDigits"
 
-export type ProductionInput = {  // UI первый блок продукции
+export type ProductionInput = {  // данные из UI, выбор клиента
   quantity: number,
   types: number,
   laminationSides: number // 1 или 2 стороны надо заламинировать

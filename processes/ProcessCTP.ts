@@ -1,7 +1,11 @@
 // Вывод форм для офсетной печати Computer-to-Plate
 import { roundDigits } from "../utils/roundDigits"
-// import { AlgPlatesCalc } from "../processes/algos/AlgPlatesCalc"
-// C:\Kirill\CALCULATOR\js\processes\algos\AlgPlatesCalc
+import { AlgPlatesCalc } from "./algos/AlgPlatesCalc"
+
+export type ProductionInput = {  // данные из UI, выбор клиента
+  productColorsFace: number,
+  productColorsBack: number
+}
 
 export type ProcessInput = {     // получаем из других процессов в техкарте
   platesQuantity: number  // global.quantityForms из алгоритма в процессе офсетная печать
@@ -55,15 +59,19 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const machine = input.machine;
   const markup = input.markup;
 
-  // result.materialQuantity = AlgPlatesCalc();
-  // result.plareslQuantity = 4; //к-во форм всего
+  type AlgInput = {
+    productColorsFace: number,
+    productColorsBack: number,
+  }
+
+  let platesQuantity = AlgPlatesCalc(AlgInput); //к-во форм всего
 
   result.materialCost = process.platesQuantity * material.costOnePlate;
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   result.materialPrice = roundDigits(result.materialPrice, 2);
   result.platesQuantity = process.platesQuantity;
 
-  result.workTime = machine.timePreparationMinutes / 60 + process.platesQuantity / (machine.platesPerHour);
+  result.workTime = machine.timePreparationMinutes / 60 + process.platesQ uantity / (machine.platesPerHour);
   result.workTime = roundDigits(result.workTime, 3);  // часов
 
   result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);

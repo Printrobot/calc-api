@@ -1,6 +1,7 @@
 export type AlgInput = {
-    data1: string
-}
+    productColorsFace: number,
+    productColorsBack: number,
+  }
 
 export type AlgOutput = {
   platesQuantity: number
@@ -8,7 +9,7 @@ export type AlgOutput = {
 
 export function AlgPlatesCalc(params: AlgInput): AlgOutput {
   const result: AlgOutput = {
-    platesQuantity: 4,
+    platesQuantity: 24,
   }
   return result;
 }
