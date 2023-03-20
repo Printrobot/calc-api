@@ -1,6 +1,6 @@
 // Вывод форм для офсетной печати Computer-to-Plate
 import { roundDigits } from "../utils/roundDigits"
-import { AlgPlatesCalc } from "./algos/AlgPlatesCalc"
+import { AlgPlatesCalc, AlgInput } from "./algos/AlgPlatesCalc"
 
 export type ProductionInput = {  // данные из UI, выбор клиента
   productColorsFace: number,
@@ -59,19 +59,20 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const machine = input.machine;
   const markup = input.markup;
 
-  type AlgInput = {
-    productColorsFace: number,
-    productColorsBack: number,
-  }
+  let algInput: AlgInput = {
+    colorsFace: -999999,
+    colorsBack: -999999,
+    workStyle: "WorkAndTurn",
+  };
 
-  let platesQuantity = AlgPlatesCalc(AlgInput); //к-во форм всего
+  result.platesQuantity = AlgPlatesCalc(algInput).platesQuantity; //к-во форм всего
 
-  result.materialCost = process.platesQuantity * material.costOnePlate;
+  result.materialCost = result.platesQuantity  * material.costOnePlate;
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   result.materialPrice = roundDigits(result.materialPrice, 2);
-  result.platesQuantity = process.platesQuantity;
+  // result.platesQuantity = process.platesQuantity;
 
-  result.workTime = machine.timePreparationMinutes / 60 + process.platesQ uantity / (machine.platesPerHour);
+  result.workTime = machine.timePreparationMinutes / 60 + process.platesQuantity / (machine.platesPerHour);
   result.workTime = roundDigits(result.workTime, 3);  // часов
 
   result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);

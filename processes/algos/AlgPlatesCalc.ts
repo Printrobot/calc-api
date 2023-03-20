@@ -1,6 +1,7 @@
 export type AlgInput = {
-    productColorsFace: number,
-    productColorsBack: number,
+  colorsFace: number,
+  colorsBack: number,
+  workStyle: string, // app\src\mrlib\PrintFormat.php function getAvalibleWorkStyles(array $props)
   }
 
 export type AlgOutput = {
@@ -9,7 +10,7 @@ export type AlgOutput = {
 
 export function AlgPlatesCalc(params: AlgInput): AlgOutput {
   const result: AlgOutput = {
-    platesQuantity: 24,
+    platesQuantity: 16,
   }
   return result;
 }
