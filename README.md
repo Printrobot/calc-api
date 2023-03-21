@@ -3,3 +3,4 @@
 # npx ts-node .\tests\processes\TestProcessCTP.ts
 # npx ts-node .\tests\processes\TestProcessCuttingSheets.ts
 # npx ts-node .\tests\processes\TestProcessCuttingFinish.ts
+# npx ts-node .\tests\processes\TestProcessOffsetSheetPrinting.ts

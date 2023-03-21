@@ -53,7 +53,7 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const machine = input.machine;
   const markup = input.markup;
 
-  //к-во резов на одной детали 
+  //к-во резов на одной детали должно быть посчитано в процессе офсет печать, algImposition (если нет процесса офсет печать?)
   result.detail.cutsOnDetail = process.cutsOnOneDetail; 
 
   //к-во приверток 
