@@ -1,4 +1,4 @@
-import { ProcessPropsInput, ProcessOutput, ProcessCalc } from "../../processes/ProcessOffsetSheetPrinting"
+import { ProcessPropsInput, ProcessOutput, ProcessCalc } from "../../processes/ProcessDigitalPrinting"
 import { assertEqual } from "../compare/assertEqual"
 // import { AlgImposition, AlgInput } from "../../processes/algos/AlgImposition"
 
@@ -8,20 +8,20 @@ const input: ProcessPropsInput = {
     productColorsBack: 4
   },
   process: {
-    detailLength: 450,
-    detailWidth: 500,
-    detailQuantity: 1000,
+    detailLength: 320,
+    detailWidth: 450,
+    detailQuantity: 20,
     // sameTypes: 1 
   },
-  material: {
-    costOneKgInk: 1200
-  },
+  // material: {
+  //   costOneKgInk: 1200
+  // },
   machine: {
     costOneHour: 4020, 
-    timePreparationMinutes: 35,  
-    mediaPreparationForSetup: 25, // листов на одну приладку
-    wasteMediaPerOperationPercent: 0.03, // процент на брак от тиража в % (0,12%)
-    sheetsPerHour: 4600,
+    timePreparationMinutes: 10,  
+    mediaPreparationForSetup: 2, // листов на одну приладку
+    wasteMediaPerOperationPercent: 0.01, // процент на брак от тиража в % (0,12%)
+    sheetsPerHour: 2000,
     inksGramsPerSqMeters: 1.2 // расход краски г на кв. метр листа
   },
   markup: {
@@ -31,14 +31,14 @@ const input: ProcessPropsInput = {
 }
 
 const outputExpected: ProcessOutput = {
-  materialInkQuantity: 599.4,
-  mediaWaste: 110, 
-  materialCost: 719.28,
-  materialPrice: 791.21,
-  workTime: 0.801,
-  workCost: 3220.02,
-  workPrice: 3542.02,
-  totalPrice: 4333.23,
+  // materialInkQuantity: 599.4,
+  mediaWaste: 4, 
+  // materialCost: 719.28,
+  // materialPrice: 791.21,
+  workTime: 0.177,
+  workCost: 26,
+  workPrice: 28.6,
+  totalPrice: 28.6,
   printsSetup: 1,
   workStyle: "WorkAndTurn",
   coefWorkStyle: 2,

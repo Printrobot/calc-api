@@ -36,6 +36,8 @@ export type ProcessOutput = {
 
 export type ProcessDetailOutput = {
   cutsOnDetail: number
+  width: number,
+  length: number
 }
 
 export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
@@ -46,6 +48,8 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     totalPrice: -9999999,
     detail: {
       cutsOnDetail: -9999999,
+      width: -9999999,
+      length: -9999999
     }
   };
 
@@ -53,8 +57,14 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const machine = input.machine;
   const markup = input.markup;
 
-  //к-во резов на одной детали должно быть посчитано в процессе офсет печать, algImposition (если нет процесса офсет печать?)
+  // Количество резов на одной детали должно быть посчитано в процессе офсет печать, algImposition. 
+  // Если нет в техкарте процесса офсетная печать, то нужен процесс резка,
+  //  который вызывает сам algImposition или вызвать в подг-е бумаги
   result.detail.cutsOnDetail = process.cutsOnOneDetail; 
+  
+  // меняем ширину и длину детали для передачи в следующий процес: 
+  result.detail.width = 333; // где брать размер?
+  result.detail.length = 444;
 
   //к-во приверток 
   let reams = process.detailQuantity * process.detailThiknessMillimeters / machine.reamHeightMax;

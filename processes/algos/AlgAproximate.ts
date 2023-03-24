@@ -9,27 +9,77 @@
 // Если global.printSheetQuantity =< costLeft то global.printSheetQuantity = costLeft
 // Если global.printSheetQuantity >= costRight то global.printSheetQuantity = costRight
 
-export type AlgInput = {
-  detailQuantity: number,
-  costDigitalPrinting: Map<number, number>
+import { AlgPlatesCalc } from "./AlgPlatesCalc"
+
+export type AlgInputAprox = {
+  detailRunList: number,
+  // costDigitalPrinting: Map<number, number>
+  costDigitalPrintingArray: QuantityCost[]
+}
+
+export type QuantityCost = {
+  runList: number,
+  cost: number,
 }
 
 export type AlgOutput = {
-  cost: number
+  costFound: number
 }
 
-export function AlgPlatesCalc(params: AlgInput): AlgOutput {
-  // console.log(AlgInput);
-  const result: AlgOutput = {
-    cost: 26,
+export function AlgAproximate(params: AlgInputAprox): AlgOutput {
+
+  function sortByRunList(arr) {
+    arr.sort((a, b) => a.runList > b.runList ? 1 : -1);
   }
+
+let arr = algInput.costDigitalPrintingArray;
+console.log(arr);
+sortByRunList(arr);
+console.log(arr);
+
+  const result: AlgOutput = {
+    costFound: 26,
+  }
+
   return result;
 }
 
-let algInput: AlgInput = {
-  detailQuantity: 120,
-  costDigitalPrinting = new Map([10, 44], [20, 35]);
+let algInput: AlgInputAprox = {
+  detailRunList: 26,
+  costDigitalPrintingArray: [
+    {"runList": 10, "cost": 32},
+    {"runList": 30, "cost": 32},
+    {"runList": 20, "cost": 32},
+    {"runList": 5, "cost": 28}],
+    
+  // costDigitalPrinting: new Map([[15, 42], [20, 14], [30, 32], [50, 28], [100, 20], [110, 20]]),
 }
 
-let costFound = AlgPlatesCalc(algInput).cost;
+let costFound = AlgAproximate(algInput).costFound;
 console.log(costFound);
+
+
+
+  // let leftRunList = algInput.detailRunList;
+  // let rightRunList = algInput.detailRunList;
+  // let minLeft = - algInput.detailRunList;
+  // let minRigth = algInput.detailRunList;
+
+  // for(let key of algInput.costDigitalPrinting.keys()) {
+  //     if (minRigth <= 0 && algInput.detailRunList - key >= minLeft) {
+  //       minLeft = algInput.detailRunList - key;
+  //       leftRunList = key; 
+        
+  //       console.log('key1 =', key, 'value =', algInput.costDigitalPrinting.get(key),
+  //       'minLeft = ',minLeft, ' minRigth =', minRigth,   
+  //       'leftRunList = ', leftRunList, 'rightRunList = ', rightRunList);
+  //     }
+  //     if (minRigth >= 0 && algInput.detailRunList - key <= minRigth) {
+  //       minRigth = algInput.detailRunList - key;
+  //       rightRunList = key; 
+
+  //       console.log('key2 =', key, 'value =', algInput.costDigitalPrinting.get(key),
+  //       'minLeft = ',minLeft, ' minRigth =', minRigth,   
+  //       'leftRunList = ', leftRunList, 'rightRunList = ', rightRunList);
+  //     }
+  // }

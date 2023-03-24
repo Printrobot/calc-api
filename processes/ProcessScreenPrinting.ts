@@ -1,10 +1,13 @@
-// Офсетная листовая печать
+// Трафаретная печать (шелкография) УФ красками или лаком.
+// Этот поцесс можно еще разбить на процессы: вывод форм, проявка сетки
 import { roundDigits } from "../utils/roundDigits"
 import { AlgImposition, AlgInput } from "./algos/AlgImposition"
 
 export type ProductionInput = {  // данные из UI, выбор клиента
-  productColorsFace: number
-  productColorsBack: number
+  colorsFace: number
+  colorsBack: number
+  colorNameFace: string
+  colorNameBack: string
 }
 
 export type ProcessInput = {  // получаем из других процессов в техкарте
@@ -24,7 +27,7 @@ export type MachineInput = {     // получаем из настроеек м�
   mediaPreparationForSetup: number // листов на одну приладку
   wasteMediaPerOperationPercent: number // процент на брак от тиража в % (0,12%)
   sheetsPerHour: number
-  inksGramsPerSqMeters: number // расход краски на кв. метр листа
+  inkSqMetersPerKg: number //  расход краски 1 кг на кв. метров
 }
 
 export type MarkupInput = {     // коэфф наценки в % 
@@ -49,7 +52,6 @@ export type ProcessOutput = {
   workCost: number
   workPrice: number
   totalPrice: number
-  // detail: ProcessDetailOutput
   printsSetup: number
   workStyle: string
   coefWorkStyle: number
@@ -92,6 +94,8 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     types: -999999,
   };
 
+  // Свой спуск для трафаретной печати, если нет в техкарте спуска для офсета
+  // Если уже ранее спуск посчитан, то берем его 
   result.printsSetup = AlgImposition(algInput).printsSetup; //к-во приладок на 1 тираж, зависит от оборота 
   result.workStyle = AlgImposition(algInput).workStyle;
   result.coefWorkStyle = AlgImposition(algInput).coefWorkStyle;
@@ -101,7 +105,7 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     result.coefWorkStyle * result.printsSetup;
 
   result.materialInkQuantity = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
-    result.coefWorkStyle * result.printsSetup * machine.inksGramsPerSqMeters / 1e6; // грамм на тираж 
+    result.coefWorkStyle * result.printsSetup /(machine.inkSqMetersPerKg * 1e3); // грамм на тираж 
   
   result.materialCost = result.materialInkQuantity  * material.costOneKgInk / 1000;
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);

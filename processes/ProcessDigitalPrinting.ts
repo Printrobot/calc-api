@@ -1,6 +1,7 @@
-// Офсетная листовая печать
+// Цифровая листовая печать
 import { roundDigits } from "../utils/roundDigits"
 import { AlgImposition, AlgInput } from "./algos/AlgImposition"
+import { AlgAproximate, AlgInputAprox } from "./algos/AlgAproximate"
 
 export type ProductionInput = {  // данные из UI, выбор клиента
   productColorsFace: number
@@ -14,9 +15,9 @@ export type ProcessInput = {  // получаем из других процес
   // sameTypesRunList: number  // кол-во повторов одинаковых тиражей. Из спуска?
 }
 
-export type MaterialInput = {     // получаем из артикула материала
-  costOneKgInk: number 
-}
+// export type MaterialInput = {     // получаем из артикула материала
+//   costOneKgInk: number 
+// }
 
 export type MachineInput = {     // получаем из настроеек машины
   costOneHour: number 
@@ -35,16 +36,16 @@ export type MarkupInput = {     // коэфф наценки в %
 export type ProcessPropsInput = {
   production: ProductionInput
   process: ProcessInput
-  material: MaterialInput
+  // material: MaterialInput
   machine: MachineInput
   markup: MarkupInput
 }
 
 export type ProcessOutput = {
-  materialInkQuantity: number
+  // materialInkQuantity: number
   mediaWaste: number // бумаги на приладку (или media)
-  materialCost: number
-  materialPrice: number
+  // materialCost: number
+  // materialPrice: number
   workTime: number
   workCost: number
   workPrice: number
@@ -63,10 +64,10 @@ export type ProcessDetailOutput = {
 
 export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const result: ProcessOutput = {
-    materialInkQuantity: -9999999, // расход краски
+    // materialInkQuantity: -9999999, // расход краски
     mediaWaste: -99999,
-    materialCost: -9999999,
-    materialPrice: -9999999,
+    // materialCost: -9999999,
+    // materialPrice: -9999999,
     workTime: -9999999,
     workCost: -9999999,
     workPrice: -9999999,
@@ -82,7 +83,7 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   };
 
   const process = input.process;
-  const material = input.material;
+  // const material = input.material;
   const machine = input.machine;
   const markup = input.markup;
 
@@ -92,6 +93,12 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     types: -999999,
   };
 
+  let algInputAprox: AlgInputAprox = {
+    detailRunList: -999999,
+    costDigitalPrinting: new Map([[10, 32], [50, 28], [100, 20]]),
+    // costDigitalPrintingArray: [{"quantity": 10, "cost": 32},{"quantity": 50, "cost": 28}],
+  };
+
   result.printsSetup = AlgImposition(algInput).printsSetup; //к-во приладок на 1 тираж, зависит от оборота 
   result.workStyle = AlgImposition(algInput).workStyle;
   result.coefWorkStyle = AlgImposition(algInput).coefWorkStyle;
@@ -99,21 +106,24 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
 
   result.mediaWaste = (machine.mediaPreparationForSetup + process.detailQuantity * machine.wasteMediaPerOperationPercent) *
     result.coefWorkStyle * result.printsSetup;
+  result.mediaWaste = roundDigits(result.mediaWaste, 0);
 
-  result.materialInkQuantity = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
-    result.coefWorkStyle * result.printsSetup * machine.inksGramsPerSqMeters / 1e6; // грамм на тираж 
+  // result.materialInkQuantity = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
+  //   result.coefWorkStyle * result.printsSetup * machine.inksGramsPerSqMeters / 1e6; // грамм на тираж 
   
-  result.materialCost = result.materialInkQuantity  * material.costOneKgInk / 1000;
-  result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
-  result.materialPrice = roundDigits(result.materialPrice, 2);
+  // result.materialCost = result.materialInkQuantity  * material.costOneKgInk / 1000;
+  // result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
+  // result.materialPrice = roundDigits(result.materialPrice, 2);
  
   result.workTime = machine.timePreparationMinutes / 60 + process.detailQuantity / (machine.sheetsPerHour);
   result.workTime = roundDigits(result.workTime, 3);  // часов
 
-  result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
+  // result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
+  let costFound = AlgAproximate(algInputAprox).costFound;
+  result.workCost = roundDigits(costFound, 2);
   result.workPrice = roundDigits(result.workCost * (markup.markupProcessPercent / 100 + 1), 2);
 
-  result.totalPrice = roundDigits((result.workPrice + result.materialPrice), 2);
+  result.totalPrice = roundDigits((result.workPrice), 2);
 
   return result;
 }

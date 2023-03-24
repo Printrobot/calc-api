@@ -1,11 +1,13 @@
-import { ProcessPropsInput, ProcessOutput, ProcessCalc } from "../../processes/ProcessOffsetSheetPrinting"
+import { ProcessPropsInput, ProcessOutput, ProcessCalc } from "../../processes/ProcessScreenPrinting"
 import { assertEqual } from "../compare/assertEqual"
 // import { AlgImposition, AlgInput } from "../../processes/algos/AlgImposition"
 
 const input: ProcessPropsInput = {
   production: {
-    productColorsFace: 4,
-    productColorsBack: 4
+    colorsFace: 1,
+    colorsBack: 1,
+    colorNameFace: 'УФ лак глянцевый',
+    colorNameBack: ''
   },
   process: {
     detailLength: 450,
@@ -14,15 +16,15 @@ const input: ProcessPropsInput = {
     // sameTypes: 1 
   },
   material: {
-    costOneKgInk: 1200
+    costOneKgInk: 6000
   },
   machine: {
-    costOneHour: 4020, 
-    timePreparationMinutes: 35,  
-    mediaPreparationForSetup: 25, // листов на одну приладку
-    wasteMediaPerOperationPercent: 0.03, // процент на брак от тиража в % (0,12%)
-    sheetsPerHour: 4600,
-    inksGramsPerSqMeters: 1.2 // расход краски г на кв. метр листа
+    costOneHour: 5000, 
+    timePreparationMinutes: 30,  
+    mediaPreparationForSetup: 5, // листов на одну приладку
+    wasteMediaPerOperationPercent: 0.02, // процент на брак от тиража в % (0,12%)
+    sheetsPerHour: 500,
+    inkSqMetersPerKg: 100 // расход краски 1 кг на кв. метров
   },
   markup: {
     markupMaterialPercent: 10, // на материал краска
@@ -31,14 +33,14 @@ const input: ProcessPropsInput = {
 }
 
 const outputExpected: ProcessOutput = {
-  materialInkQuantity: 599.4,
-  mediaWaste: 110, 
-  materialCost: 719.28,
-  materialPrice: 791.21,
-  workTime: 0.801,
-  workCost: 3220.02,
-  workPrice: 3542.02,
-  totalPrice: 4333.23,
+  materialInkQuantity: 4725,
+  mediaWaste: 50, 
+  materialCost: 28350,
+  materialPrice: 31185,
+  workTime: 2.5,
+  workCost: 12500,
+  workPrice: 13750,
+  totalPrice: 44935,
   printsSetup: 1,
   workStyle: "WorkAndTurn",
   coefWorkStyle: 2,
