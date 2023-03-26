@@ -55,6 +55,7 @@ export type ProcessOutput = {
   workStyle: string
   coefWorkStyle: number
   sameTypesRunList: number
+  cutsOnDetail: number
 }
 
 export type ProcessDetailOutput = {
@@ -75,7 +76,8 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     printsSetup: -9999999,
     workStyle: "stringNull",
     coefWorkStyle: -9999999,
-    sameTypesRunList: -9999999
+    sameTypesRunList: -9999999,
+    cutsOnDetail: -9999999,
     // detail: {
     //   thiknessMillimeters: -9999999,
     //   weigthGramsSqMeter: -9999999,
@@ -95,14 +97,15 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
 
   let algInputAprox: AlgInputAprox = {
     detailRunList: -999999,
-    costDigitalPrinting: new Map([[10, 32], [50, 28], [100, 20]]),
-    // costDigitalPrintingArray: [{"quantity": 10, "cost": 32},{"quantity": 50, "cost": 28}],
+    // costDigitalPrinting: new Map([[10, 32], [50, 28], [100, 20]]),
+    costDigitalPrintingArray: [{"runList": 10, "cost": 32},{"runList": 50, "cost": 28}],
   };
 
   result.printsSetup = AlgImposition(algInput).printsSetup; //к-во приладок на 1 тираж, зависит от оборота 
   result.workStyle = AlgImposition(algInput).workStyle;
   result.coefWorkStyle = AlgImposition(algInput).coefWorkStyle;
   result.sameTypesRunList = AlgImposition(algInput).sameTypesRunList; // Пока не используем
+  result.cutsOnDetail = AlgImposition(algInput).cutsOnDetail;
 
   result.mediaWaste = (machine.mediaPreparationForSetup + process.detailQuantity * machine.wasteMediaPerOperationPercent) *
     result.coefWorkStyle * result.printsSetup;

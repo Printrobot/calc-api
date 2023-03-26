@@ -24,7 +24,7 @@ export function AlgImposition(params: AlgInput): AlgOutput {
   const result: AlgOutput = {
     // схема раскладки на листе
     // резов по горизонтале и вертикале:
-    cutsOnDetail: 6,
+    cutsOnDetail: 2,
     workStyle: WorkStyle.WorkAndTurn,
     coefWorkStyle: 2, // 1 - без оборота, 2 - чужой или свой
     printsSetup: 1, // приладок

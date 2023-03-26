@@ -43,6 +43,7 @@ const outputExpected: ProcessOutput = {
   workStyle: "WorkAndTurn",
   coefWorkStyle: 2,
   sameTypesRunList: 1,
+  cutsOnDetail: 2
 }
 
 const outputActual = ProcessCalc(input);

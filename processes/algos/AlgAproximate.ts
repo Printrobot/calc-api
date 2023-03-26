@@ -28,14 +28,41 @@ export type AlgOutput = {
 
 export function AlgAproximate(params: AlgInputAprox): AlgOutput {
 
-  function sortByRunList(arr) {
-    arr.sort((a, b) => a.runList > b.runList ? 1 : -1);
+  function sortByRunList(arr: QuantityCost[]) {
+    arr.sort((a: QuantityCost, b: QuantityCost) => a.runList > b.runList ? 1 : -1);
   }
 
-let arr = algInput.costDigitalPrintingArray;
-console.log(arr);
-sortByRunList(arr);
-console.log(arr);
+  let arr = algInput.costDigitalPrintingArray;
+  sortByRunList(arr);
+
+  let leftQuantity = 0;
+  let rightQuantity = 0;
+  let leftCost = 0;
+  let rightCost = 0;
+  // let leftQuantity =  (typeof arr[0] === 'undefined')  ?  0 : arr[0].runList;
+  // let rightQuantity =  (typeof arr[1] === 'undefined')  ?  0 : arr[1].runList;
+
+  for(let i = 0; i < arr.length; i++) {
+
+    if (algInput.detailRunList >= arr[i].runList) {
+      leftQuantity = arr[i].runList;
+      rightQuantity =  (typeof arr[i+1] === 'undefined')  ?  arr[i].runList : arr[i+1].runList;
+      // leftCost = arr[i].cost;
+      // rightCost =  (typeof arr[i+1] === 'undefined')  ?  arr[i].cost : arr[i+1].cost;
+    }else{
+      // leftQuantity = arr[i].runList;
+      rightQuantity =  arr[i].runList;
+      // rightCost = arr[i].cost;
+      break;
+    };
+  }
+
+  // costFound = (costRight - costLeft) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostRight
+  
+  costFound = (arr[leftIndex].cost - costLeft) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostRight
+
+  console.log("leftQuantity = ", leftQuantity, "rightQuantity = ", rightQuantity,
+    "leftCost = ", leftCost, "rightCost = ", rightCost);
 
   const result: AlgOutput = {
     costFound: 26,
@@ -45,41 +72,13 @@ console.log(arr);
 }
 
 let algInput: AlgInputAprox = {
-  detailRunList: 26,
+  detailRunList: 11,
   costDigitalPrintingArray: [
+    {"runList": 5, "cost": 36},
     {"runList": 10, "cost": 32},
-    {"runList": 30, "cost": 32},
-    {"runList": 20, "cost": 32},
-    {"runList": 5, "cost": 28}],
-    
-  // costDigitalPrinting: new Map([[15, 42], [20, 14], [30, 32], [50, 28], [100, 20], [110, 20]]),
+    {"runList": 20, "cost": 30},
+    {"runList": 50, "cost": 28}],
 }
 
 let costFound = AlgAproximate(algInput).costFound;
 console.log(costFound);
-
-
-
-  // let leftRunList = algInput.detailRunList;
-  // let rightRunList = algInput.detailRunList;
-  // let minLeft = - algInput.detailRunList;
-  // let minRigth = algInput.detailRunList;
-
-  // for(let key of algInput.costDigitalPrinting.keys()) {
-  //     if (minRigth <= 0 && algInput.detailRunList - key >= minLeft) {
-  //       minLeft = algInput.detailRunList - key;
-  //       leftRunList = key; 
-        
-  //       console.log('key1 =', key, 'value =', algInput.costDigitalPrinting.get(key),
-  //       'minLeft = ',minLeft, ' minRigth =', minRigth,   
-  //       'leftRunList = ', leftRunList, 'rightRunList = ', rightRunList);
-  //     }
-  //     if (minRigth >= 0 && algInput.detailRunList - key <= minRigth) {
-  //       minRigth = algInput.detailRunList - key;
-  //       rightRunList = key; 
-
-  //       console.log('key2 =', key, 'value =', algInput.costDigitalPrinting.get(key),
-  //       'minLeft = ',minLeft, ' minRigth =', minRigth,   
-  //       'leftRunList = ', leftRunList, 'rightRunList = ', rightRunList);
-  //     }
-  // }
