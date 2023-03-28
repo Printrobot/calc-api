@@ -1,22 +1,22 @@
 openapi: 3.0.3
 info:
-  title: Категория материала
+  title: Типы материалов
   version: 1.0.0
 servers:
   - url: http://localhost:8080
     description: Dev Server
 tags:
-  - name: MC
-    description: Materials Categories
+  - name: MT
+    description: Materials Types
 
 paths:
-  /v1/materials-categories:
+  /v1/materials-types:
     get:
-      summary: Метод получения списка категорий материала
-      description: Метод предназначен для получения списка всех категорий материала, сохраненных в БД
-      operationId: getMaterialsCategories
+      summary: Метод получения списка типов материалов
+      description: Метод предназначен для получения списка всех типов материалов, сохраненных в БД
+      operationId: getMaterialsTypes
       tags:
-        - MC
+        - MT
 
       security:
         - bearerAuth: []
@@ -27,13 +27,13 @@ paths:
 
       responses:
         "200":
-          description: Был получен список категорий материала
+          description: Был получен список типов материалов
           content:
             application/json;charset=UTF-8:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialCategory"
+                  $ref: "#/components/schemas/MaterialType"
         "401":
           $ref: "#/components/responses/Error401Response"
         "403":
@@ -42,11 +42,11 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     post:
-      summary: Метод добавления новой категории материала
-      description: Метод предназначен для создания новой категории материала в БД
-      operationId: createMaterialsCategories
+      summary: Метод добавления нового типа материала
+      description: Метод предназначен для создания нового типа материала в БД
+      operationId: createMaterialType
       tags:
-        - MC
+        - MT
 
       security:
         - bearerAuth: []
@@ -59,11 +59,11 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/MaterialCategory"
+              $ref: "#/components/schemas/MaterialType"
 
       responses:
         "201":
-          description: Категория материала успешно создана
+          description: Тип материала успешно создан
           content:
             application/json;charset=UTF-8:
               schema:
@@ -77,23 +77,23 @@ paths:
         "5XX":
           $ref: "#/components/responses/Error5XXResponse"
 
-  /v1/materials-categories/{categoryId}:
+  /v1/materials-types/{typeId}:
     get:
-      summary: Метод получения категории материала по его идентификатору
-      description: Метод предназначен для получения данных категории материала из БД
-      operationId: getMaterialCategory
+      summary: Метод получения типов материалов по его идентификатору
+      description: Метод предназначен для получения данных типов материалов из БД
+      operationId: getMaterialType
       tags:
-        - MC
+        - MT
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: categoryId
+        - name: typeId
           in: path
           required: true
-          description: Идентификатор категории материала
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
@@ -101,11 +101,11 @@ paths:
 
       responses:
         "200":
-          description: Была получена категория материала
+          description: Был получен типа материала
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: "#/components/schemas/MaterialCategory"
+                $ref: "#/components/schemas/MaterialType"
         "401":
           $ref: "#/components/responses/Error401Response"
         "403":
@@ -116,21 +116,21 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     put:
-      summary: Метод обновления категории материала
-      description: Метод предназначен для обновления категории материала в БД
-      operationId: updateMaterialCategory
+      summary: Метод обновления типа материала
+      description: Метод предназначен для обновления типа материала в БД
+      operationId: updateMaterialType
       tags:
-        - MC
+        - MT
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: categoryId
+        - name: typeId
           in: path
           required: true
-          description: Идентификатор категории материала
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
@@ -140,11 +140,11 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/MaterialCategory"
+              $ref: "#/components/schemas/MaterialType"
 
       responses:
         "204":
-          description: Категория материала успешно создана
+          description: Тип материала успешно создан
         "400":
           $ref: "#/components/responses/Error400Response"
         "401":
@@ -155,27 +155,27 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     delete:
-      summary: Метод удаления категории материала по его идентификатору
-      description: Метод предназначен для удаления данных о категории материала в БД
-      operationId: deleteMaterialCategory
+      summary: Метод удаления типа материала по его идентификатору
+      description: Метод предназначен для удаления данных о типе материала в БД
+      operationId: deleteMaterialType
       tags:
-        - MC
+        - MT
 
       security:
         - bearerAuth: []
 
       parameters:
-        - name: categoryId
+        - name: typeId
           in: path
           required: true
-          description: Идентификатор категории материала
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
 
       responses:
         "204":
-          description: Категория материала была удалёна
+          description: Тип материала был удалён
 
 components:
 
@@ -253,25 +253,45 @@ components:
           type: integer
           example: 1000
 
-    MaterialCategory:
+    MaterialType:
       type: object
       description: |-
-        Категория материала. \
-        Спецификация https://printrobot.atlassian.net/wiki/spaces/
+        Типы материалов. \
+        Спецификация https://printrobot.atlassian.net/wiki/spaces/...
       properties:
-        categoryId: # get, store
+        materialTypeId: # get, store
           type: integer
-          example: 28
-        parentId: # get, create
+          example: 13
+        categoryId: # get, create
           type: integer
           example: 26
-        categoryName: # get, create, store
+        materialName: # get, create, store
           type: string
-          example: "мелованная бумага"
-        isEnabled:
-          description: Доступен для ...
+          example: "Бумага"
+        measureId: # get, create, store
+          description: |-
+          type: integer
+          example: 1
+        isToolSet: # get, create, store
+          description: |-
           type: boolean
           example: true
+        isFloat: # get, create, store
+          description: |-
+          type: boolean
+          example: true
+        isAutoReserving: # get, create, store
+          description: Обязательность заполнения поля
+          type: boolean
+          example: false
+        isRecalcKg2sheet: # get, store
+          description: |-
+          type: boolean
+          example: false
+        createdAt:
+          description: Дата и время типа материала
+          type: string
+          example: "2023-01-01T10:25:37+01"
 
   responses:
     Error400Response:

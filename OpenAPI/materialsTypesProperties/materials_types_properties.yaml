@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Типы материалов
+  title: Типы характеристик материалов
   version: 1.0.0
 servers:
   - url: http://localhost:8080
@@ -12,9 +12,9 @@ tags:
 paths:
   /v1/materials-types-properties:
     get:
-      summary: Метод получения списка типов материалов
+      summary: Метод получения списка типов характеристик материалов
       description: Метод предназначен для получения списка типов материалов, сохраненных в БД
-      operationId: getMaterialsTypesProperties
+      operationId: getMaterialsTypesProperty
       tags:
         - MTP
 
@@ -27,7 +27,7 @@ paths:
 
       responses:
         "200":
-          description: Был получен список типов материалов
+          description: Был получен список типов характеристик материалов
           content:
             application/json;charset=UTF-8:
               schema:
@@ -42,8 +42,8 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     post:
-      summary: Метод добавления типа материала
-      description: Метод предназначен для создания нового типа материала в БД
+      summary: Метод добавления типа характеристики материала
+      description: Метод предназначен для создания нового типа характеристик материала в БД
       operationId: createMaterialsTypesProperties
       tags:
         - MTP
@@ -63,7 +63,7 @@ paths:
 
       responses:
         "201":
-          description: Тип материала успешно создан
+          description: Тип характеристики материала успешно создан
           content:
             application/json;charset=UTF-8:
               schema:
@@ -77,7 +77,7 @@ paths:
         "5XX":
           $ref: "#/components/responses/Error5XXResponse"
 
-  /v1/material-type-property/{propertyId}:
+  /v1/materials-types-properties/{propertyId}:
     get:
       summary: Метод получения типа материала по его идентификатору
       description: Метод предназначен для получения данных типа материала из БД
@@ -256,7 +256,7 @@ components:
     MaterialsTypesProperties:
       type: object
       description: |-
-        Типы материалов. \
+        Типы характеристик материалов. \
         Спецификация https://printrobot.atlassian.net/l/cp/8Qk2Hcs0
       properties:
         propertyId: # get, store
@@ -287,7 +287,7 @@ components:
         isFixed: # get, create, store
           description: что это?
           type: boolean
-          example: 1
+          example: true
         orderField:
           description: что это?
           type: integer
@@ -296,6 +296,14 @@ components:
           description: что это?
           type: string
           example: NULL
+        body: # get, create, store
+          description: Json объект тип материала соответсвущего спецификации
+          type: string
+          example: "{\"json\": \"object\"}"
+        createdAt:
+          description: Дата и время типа материала
+          type: string
+          example: "2023-01-01T10:25:37+01"
 
   responses:
     Error400Response:
