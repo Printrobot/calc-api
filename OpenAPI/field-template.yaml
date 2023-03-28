@@ -1,0 +1,358 @@
+openapi: 3.0.3
+info:
+  title: Управление пользовательским интерфейсом
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: FT
+    description: Field Template
+
+paths:
+  /v1/field-templates:
+    get:
+      summary: Метод получения списка шаблонов полей
+      description: Метод предназначен для получения списка всех шаблонов полей, сохраненных в БД
+      operationId: getFieldTemplates
+      tags:
+        - FT
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список шаблонов полей
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FormFieldTemplate"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления нового шаблона поля
+      description: Метод предназначен для создания нового шаблона поля в БД
+      operationId: createFieldTemplate
+      tags:
+        - FT
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/FormFieldTemplate"
+
+      responses:
+        "201":
+          description: Шаблон поля успешно создан
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/field-template/{templateId}:
+    get:
+      summary: Метод получения шаблона поля по его идентификатору
+      description: Метод предназначен для получения данных шаблона поля из БД
+      operationId: getFieldTemplate
+      tags:
+        - FT
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: templateId
+          in: path
+          required: true
+          description: Идентификатор шаблона поля
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен шаблон поля
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/FormFieldTemplate"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления шаблона поля
+      description: Метод предназначен для обновления шаблона поля в БД
+      operationId: updateFieldTemplate
+      tags:
+        - FT
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: templateId
+          in: path
+          required: true
+          description: Идентификатор шаблона поля
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/FormFieldTemplate"
+
+      responses:
+        "204":
+          description: Шаблон поля успешно создан
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления шаблона поля по его идентификатору
+      description: Метод предназначен для удаления данных о шаблоне поля в БД
+      operationId: deleteFieldTemplate
+      tags:
+        - FT
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Идентификатор шаблона поля
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: Шаблон поля был удалён
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    FormFieldTemplate:
+      type: object
+      description: |-
+        Шаблон пользовательского компонента. \
+        Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        id: # get, store
+          type: integer
+          example: 1000
+        paramName: # get, create
+          type: string
+          example: "ProcessDevelopment"
+        caption: # get, create, store
+          type: string
+          example: "Процесс разработки"
+        fieldType: # get, create, store
+          description: |-
+            Тип шаблона:
+            - group - объект поле "группа" (пользовательский компонент)
+            - fields - объект список полей ;
+          type: string
+          enum:
+            - group
+            - fields
+          example: "group"
+        fieldDetailing: # get, create, store
+          description: |-
+            Детализация, используемая шаблоном:
+            - normal - пользовательская;
+            - extended - расширенная (для менеджера);
+          type: string
+          enum:
+            - normal
+            - extended
+          example: "normal"
+        fieldRequired: # get, create, store
+          description: Обязательность заполнения поля
+          type: boolean
+          example: true
+        status: # get, store
+          description: |-
+            Текущий статус шаблона поля:
+            - draft - черновик;
+            - enabled - используется;
+            - disabled - отключён;
+          type: string
+          enum:
+            - draft
+            - enabled
+            - disabled
+          example: "draft"
+        body: # get, create, store
+          description: Json объект шаблона соответсвущего спецификации
+          type: string
+          example: "{\"json\": \"object\"}"
+        createdAt:
+          description: Дата и время сохранения шаблона
+          type: string
+          example: "2023-01-01T10:25:37+01"
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

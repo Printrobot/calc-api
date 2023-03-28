@@ -1,19 +1,11 @@
 // Расчет цены цифровой печати.
 // Есть массив costDigitalPrinting [тираж, себестоимость оттиска] сохраняем в отдельном файле и можем подключать к разным печатным машинам.
 // Находим себест печати cost при заданном тираже detailQuantity
-// Находим между какими тиражами leftQuantity и rightQuantity лежит detailQuantity
-// Если costRight > costLeft то
-// cost = (costRight - costLeft) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostRight
-// Если costRight < costLeft то
-// cost = (costLeft - costRight) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostLeft
-// Если global.printSheetQuantity =< costLeft то global.printSheetQuantity = costLeft
-// Если global.printSheetQuantity >= costRight то global.printSheetQuantity = costRight
-
-import { AlgPlatesCalc } from "./AlgPlatesCalc"
+// Находим между какими тиражами leftQuantity и rightQuantity лежит detailQuantity, 
+//   если за пределами отрезка, то берем крайнее значение
 
 export type AlgInputAprox = {
   detailRunList: number,
-  // costDigitalPrinting: Map<number, number>
   costDigitalPrintingArray: QuantityCost[]
 }
 
@@ -37,47 +29,53 @@ export function AlgAproximate(params: AlgInputAprox): AlgOutput {
 
   let leftQuantity = 0;
   let rightQuantity = 0;
-  let leftCost = 0;
-  let rightCost = 0;
-  // let leftQuantity =  (typeof arr[0] === 'undefined')  ?  0 : arr[0].runList;
-  // let rightQuantity =  (typeof arr[1] === 'undefined')  ?  0 : arr[1].runList;
+  let leftCost = arr[0].cost;
+  let rightCost = arr[0].cost;
+  let costFound = 0;
 
   for(let i = 0; i < arr.length; i++) {
 
     if (algInput.detailRunList >= arr[i].runList) {
       leftQuantity = arr[i].runList;
-      rightQuantity =  (typeof arr[i+1] === 'undefined')  ?  arr[i].runList : arr[i+1].runList;
-      // leftCost = arr[i].cost;
-      // rightCost =  (typeof arr[i+1] === 'undefined')  ?  arr[i].cost : arr[i+1].cost;
+      leftCost = arr[i].cost;
+        if (typeof arr[i+1] === 'undefined') {
+          rightQuantity = arr[i].runList;
+          rightCost =  arr[i].cost;
+        }else{
+          rightQuantity = arr[i+1].runList;
+          rightCost =  arr[i+1].cost;
+        }
     }else{
-      // leftQuantity = arr[i].runList;
       rightQuantity =  arr[i].runList;
-      // rightCost = arr[i].cost;
+      rightCost = arr[i].cost;
       break;
     };
   }
 
-  // costFound = (costRight - costLeft) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostRight
-  
-  costFound = (arr[leftIndex].cost - costLeft) * (AmountRight - global.printSheetQuantity) / (AmountRight - AmountLeft) + CostRight
+  if (rightQuantity - leftQuantity == 0) {
+    costFound = rightCost;
+  } else {
+    costFound = (rightCost - leftCost) * (algInput.detailRunList - leftQuantity) / (rightQuantity - leftQuantity) + leftCost;
+  }
 
   console.log("leftQuantity = ", leftQuantity, "rightQuantity = ", rightQuantity,
     "leftCost = ", leftCost, "rightCost = ", rightCost);
+  console.log("costFound: ", costFound);
 
   const result: AlgOutput = {
-    costFound: 26,
+    costFound: 26 // для тестов mock
   }
-
+  
   return result;
 }
 
 let algInput: AlgInputAprox = {
-  detailRunList: 11,
+  detailRunList: 250,
   costDigitalPrintingArray: [
     {"runList": 5, "cost": 36},
     {"runList": 10, "cost": 32},
     {"runList": 20, "cost": 30},
-    {"runList": 50, "cost": 28}],
+    {"runList": 30, "cost": 20}],
 }
 
 let costFound = AlgAproximate(algInput).costFound;
