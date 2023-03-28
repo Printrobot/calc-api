@@ -1,0 +1,318 @@
+openapi: 3.0.3
+info:
+  title: Категория материала
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: MC
+    description: Materials Categories
+
+paths:
+  /v1/materials-categories:
+    get:
+      summary: Метод получения списка категорий материала
+      description: Метод предназначен для получения списка всех категорий материала, сохраненных в БД
+      operationId: getMaterialsCategories
+      tags:
+        - MC
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список категорий материала
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MaterialCategory"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления новой категории материала
+      description: Метод предназначен для создания новой категории материала в БД
+      operationId: createMaterialsCategories
+      tags:
+        - MC
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/MaterialCategory"
+
+      responses:
+        "201":
+          description: Категория материала успешно создана
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/material-category/{categoryId}:
+    get:
+      summary: Метод получения категории материала по его идентификатору
+      description: Метод предназначен для получения данных категории материала из БД
+      operationId: getMaterialCategory
+      tags:
+        - MC
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор категории материала
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Была получена категория материала
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/MaterialCategory"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления категории материала
+      description: Метод предназначен для обновления категории материала в БД
+      operationId: updateMaterialCategory
+      tags:
+        - MC
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор категории материала
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/MaterialCategory"
+
+      responses:
+        "204":
+          description: Категория материала успешно создана
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления категории материала по его идентификатору
+      description: Метод предназначен для удаления данных о категории материала в БД
+      operationId: deleteMaterialCategory
+      tags:
+        - MC
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор категории материала
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: Категория материала была удалёна
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    MaterialCategory:
+      type: object
+      description: |-
+        Категория материала. \
+        Спецификация https://printrobot.atlassian.net/wiki/spaces/
+      properties:
+        categoryId: # get, store
+          type: integer
+          example: 28
+        parentId: # get, create
+          type: integer
+          example: 26
+        categoryName: # get, create, store
+          type: string
+          example: "мелованная бумага"
+        isEnabled:
+          description: Доступен для ...
+          type: boolean
+          example: 1
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
