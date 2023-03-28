@@ -6,17 +6,17 @@ servers:
   - url: http://localhost:8080
     description: Dev Server
 tags:
-  - name: MT
-    description: materials types
+  - name: MTP
+    description: Materials Types Properties
 
 paths:
   /v1/materials-types-properties:
     get:
       summary: Метод получения списка типов материалов
-      description: Метод предназначен для получения списка типов материалов сохраненных в БД
-      operationId: getFieldTemplates
+      description: Метод предназначен для получения списка типов материалов, сохраненных в БД
+      operationId: getMaterialsTypesProperties
       tags:
-        - MT
+        - MTP
 
       security:
         - bearerAuth: []
@@ -27,7 +27,7 @@ paths:
 
       responses:
         "200":
-          description: Был получен список полей
+          description: Был получен список типов материалов
           content:
             application/json;charset=UTF-8:
               schema:
@@ -44,9 +44,9 @@ paths:
     post:
       summary: Метод добавления типа материала
       description: Метод предназначен для создания нового типа материала в БД
-      operationId: createFieldTemplate
+      operationId: createMaterialsTypesProperties
       tags:
-        - MT
+        - MTP
 
       security:
         - bearerAuth: []
@@ -77,23 +77,23 @@ paths:
         "5XX":
           $ref: "#/components/responses/Error5XXResponse"
 
-  /v1/materials-types-properties/{templateId}:
+  /v1/material-type-property/{propertyId}:
     get:
       summary: Метод получения типа материала по его идентификатору
       description: Метод предназначен для получения данных типа материала из БД
-      operationId: getFieldTemplate
+      operationId: getMaterialsTypesProperties
       tags:
-        - MT
+        - MTP
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: templateId
+        - name: propertyId
           in: path
           required: true
-          description: Идентификатор шаблона поля
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
@@ -101,7 +101,7 @@ paths:
 
       responses:
         "200":
-          description: Был получен шаблон поля
+          description: Был получен тип материала
           content:
             application/json;charset=UTF-8:
               schema:
@@ -116,21 +116,21 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     put:
-      summary: Метод обновления шаблона поля
-      description: Метод предназначен для обновления шаблона поля в БД
-      operationId: updateFieldTemplate
+      summary: Метод обновления типа материала
+      description: Метод предназначен для обновления типа материала в БД
+      operationId: updateMaterialsTypesProperties
       tags:
-        - MT
+        - MTP
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: templateId
+        - name: propertyId
           in: path
           required: true
-          description: Идентификатор шаблона поля
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
@@ -144,7 +144,7 @@ paths:
 
       responses:
         "204":
-          description: Шаблон поля успешно создан
+          description: Тип материала успешно создан
         "400":
           $ref: "#/components/responses/Error400Response"
         "401":
@@ -155,27 +155,27 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     delete:
-      summary: Метод удаления шаблона поля по его идентификатору
-      description: Метод предназначен для удаления данных о шаблоне поля в БД
-      operationId: deleteFieldTemplate
+      summary: Метод удаления типа материала по его идентификатору
+      description: Метод предназначен для удаления данных о типе материала в БД
+      operationId: deleteMaterialsTypesProperties
       tags:
-        - MT
+        - MTP
 
       security:
         - bearerAuth: []
 
       parameters:
-        - name: templateId
+        - name: propertyId
           in: path
           required: true
-          description: Идентификатор шаблона поля
+          description: Идентификатор типа материала
           schema:
             type: integer
           example: 1000
 
       responses:
         "204":
-          description: Шаблон поля был удалён
+          description: Тип материала был удалён
 
 components:
 
@@ -259,41 +259,41 @@ components:
         Типы материалов. \
         Спецификация https://printrobot.atlassian.net/l/cp/8Qk2Hcs0
       properties:
-        property_id: # get, store
+        propertyId: # get, store
           type: integer
           example: 2
-        object_id: # get, create
+        objectId: # get, create
           type: integer
           example: 13
-        property_name: # get, create, store
+        propertyName: # get, create, store
           type: string
           example: "ширина"
-        property_var: # get, create, store
+        propertyVar: # get, create, store
           description: |-
             Имя переменной в формулах;
           type: string
           example: "mt_paper_width"
-        value_by_default: # get, create, store
+        valueByDefault: # get, create, store
           type: string
           example: "700"
         measure_id: # get, create, store
           description: Ссылка на единицы измерения
           type: integer
           example: 9
-        input_type: # get, store
-          description: возможные варианты отображения в UI и соответствия данным
+        inputType: # get, store
+          description: возможные варианты отображения в UI и соответствия в БД
           type: string
           example: "list:{yes=Да;no=Нет}"
-        is_fixed: # get, create, store
-          description: ???
+        isFixed: # get, create, store
+          description: что это?
           type: boolean
           example: 1
-        order_field:
-          description: ???
+        orderField:
+          description: что это?
           type: integer
           example: 3
         tag:
-          description: ???
+          description: что это?
           type: string
           example: NULL
 
