@@ -1,0 +1,28 @@
+common_measures - common_units
+erp_print_colors
+erp_processes_types
+erp_productions
+erp_stores
+erp_stores_materials = cl_materials
+erp_stores_materials_categories = cl_material_categories
+erp_tools_categories
+erp_tools_machines = cl_machines
+erp_tools_services = cl_services
+-- erp_accounting_ownerships
+-- erp_accounting_own_firms
+-- erp_appointments
+-- erp_companies
+-- erp_payers
+-- erp_customers
+-- erp_departments
+-- erp_employees
+-- erp_messages
+-- erp_messages_groups
+-- erp_orders
+-- erp_processes
+-- erp_statuses
+
+готово:
+erp_stores_materials_types_properties
+erp_stores_materials_categories
+erp_stores_materials_types

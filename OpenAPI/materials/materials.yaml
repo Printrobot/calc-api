@@ -1,22 +1,22 @@
 openapi: 3.0.3
 info:
-  title: Типы характеристик материалов
+  title: Материалы
   version: 1.0.0
 servers:
   - url: http://localhost:8080
     description: Dev Server
 tags:
-  - name: MTP
-    description: Materials Types Properties
+  - name: M
+    description: Materials
 
 paths:
-  /v1/materials-types-properties:
+  /v1/materials:
     get:
-      summary: Метод получения списка типов характеристик материалов
-      description: Метод предназначен для получения списка типов материалов, сохраненных в БД
-      operationId: getMaterialsTypesProperty
+      summary: Метод получения списка материалов
+      description: Метод предназначен для получения списка всех материалов, сохраненных в БД
+      operationId: getMaterials
       tags:
-        - MTP
+        - M
 
       security:
         - bearerAuth: []
@@ -27,13 +27,13 @@ paths:
 
       responses:
         "200":
-          description: Был получен список типов характеристик материалов
+          description: Был получен список материалов
           content:
             application/json;charset=UTF-8:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialsTypesProperties"
+                  $ref: "#/components/schemas/Material"
         "401":
           $ref: "#/components/responses/Error401Response"
         "403":
@@ -42,11 +42,11 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     post:
-      summary: Метод добавления типа характеристики материала
-      description: Метод предназначен для создания нового типа характеристик материала в БД
-      operationId: createMaterialsTypesProperties
+      summary: Метод добавления нового материала
+      description: Метод предназначен для создания материала в БД
+      operationId: createMaterial
       tags:
-        - MTP
+        - M
 
       security:
         - bearerAuth: []
@@ -59,11 +59,11 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/MaterialsTypesProperties"
+              $ref: "#/components/schemas/Material"
 
       responses:
         "201":
-          description: Тип характеристики материала успешно создан
+          description: Материал успешно создан
           content:
             application/json;charset=UTF-8:
               schema:
@@ -77,23 +77,23 @@ paths:
         "5XX":
           $ref: "#/components/responses/Error5XXResponse"
 
-  /v1/materials-types-properties/{propertyId}:
+  /v1/materials/{materialId}:
     get:
-      summary: Метод получения типа характеристики материала по его идентификатору
-      description: Метод предназначен для получения данных типа материала из БД
-      operationId: getMaterialsTypesProperties
+      summary: Метод получения материала по его идентификатору
+      description: Метод предназначен для получения данных материала из БД
+      operationId: getMaterial
       tags:
-        - MTP
+        - M
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: propertyId
+        - name: materialId
           in: path
           required: true
-          description: Идентификатор типа характеристики материала
+          description: Идентификатор материала
           schema:
             type: integer
           example: 1000
@@ -101,11 +101,11 @@ paths:
 
       responses:
         "200":
-          description: Был получен тип характеристики материала
+          description: Был получен материал
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: "#/components/schemas/MaterialsTypesProperties"
+                $ref: "#/components/schemas/Material"
         "401":
           $ref: "#/components/responses/Error401Response"
         "403":
@@ -116,21 +116,21 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     put:
-      summary: Метод обновления типа характеристики материала
-      description: Метод предназначен для обновления типа характеристики материала в БД
-      operationId: updateMaterialsTypesProperties
+      summary: Метод обновления материала
+      description: Метод предназначен для обновления материала в БД
+      operationId: updateMaterial
       tags:
-        - MTP
+        - M
 
       security:
         - bearerAuth: []
 
       parameters:
         - $ref: "#/components/parameters/corellationId"
-        - name: propertyId
+        - name: materialId
           in: path
           required: true
-          description: Идентификатор типа характеристики материала
+          description: Идентификатор материала
           schema:
             type: integer
           example: 1000
@@ -140,11 +140,11 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/MaterialsTypesProperties"
+              $ref: "#/components/schemas/Material"
 
       responses:
         "204":
-          description: Тип материала успешно создан
+          description: Материал успешно создан
         "400":
           $ref: "#/components/responses/Error400Response"
         "401":
@@ -155,27 +155,27 @@ paths:
           $ref: "#/components/responses/Error5XXResponse"
 
     delete:
-      summary: Метод удаления типа характеристики материала по его идентификатору
-      description: Метод предназначен для удаления данных о типе характеристики материала в БД
-      operationId: deleteMaterialsTypesProperties
+      summary: Метод удаления материала по его идентификатору
+      description: Метод предназначен для удаления данных о материале в БД
+      operationId: deleteMaterial
       tags:
-        - MTP
+        - M
 
       security:
         - bearerAuth: []
 
       parameters:
-        - name: propertyId
+        - name: materialId
           in: path
           required: true
-          description: Идентификатор типа характеристики материала
+          description: Идентификатор материала
           schema:
             type: integer
           example: 1000
 
       responses:
         "204":
-          description: Тип характеристики материала был удалён
+          description: Материал был удалён
 
 components:
 
@@ -253,51 +253,59 @@ components:
           type: integer
           example: 1000
 
-    MaterialsTypesProperties:
+    Material:
       type: object
       description: |-
-        Типы характеристик материалов. \
-        Спецификация https://printrobot.atlassian.net/l/cp/8Qk2Hcs0
+        Шаблон пользовательского компонента. \
+        Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
       properties:
-        propertyId: # get, store
-          type: integer
-          example: 2
-        objectId: # get, create
-          type: integer
-          example: 13
-        propertyName: # get, create, store
-          type: string
-          example: "ширина"
-        propertyVar: # get, create, store
-          description: |-
-            Имя переменной в формулах;
-          type: string
-          example: "mt_paper_width"
-        valueByDefault: # get, create, store
-          type: string
-          example: "700"
-        measure_id: # get, create, store
-          description: Ссылка на единицы измерения
-          type: integer
-          example: 9
-        inputType: # get, store
-          description: возможные варианты отображения в UI и соответствия в БД
-          type: string
-          example: "list:{yes=Да;no=Нет}"
-        isFixed: # get, create, store
-          description: что это?
-          type: boolean
-          example: true
-        orderField:
-          description: что это?
+        materialId: # get, store
           type: integer
           example: 3
-        tag:
-          description: что это?
+        materialTypeId: # get, create
+          type: integer
+          example: 13
+        categoryId: # get, create, store
+          type: integer
+          example: 28
+        materialArticle: # get, create, store
+          description: "Артикул материала"
           type: string
-          example: NULL
+          example: "мел-170гл_70х100"
+        materialName: # get, create, store
+          description: "Торговая марка материала" 
+          type: string
+          example: "Стандартная" 
+        materialDescript: # get, create, store
+          description: "Описание"
+          type: string
+          example: "для цифровой печати" 
+        materialPrice: # get, create, store
+          description: |-
+          type: number
+          example: 10.12 
+        datePriceChanged: # get, create, store
+          description: |-
+          type: integer
+          example: "2020-03-17" 
+        quantityMin: # get, create, store
+          description: "необходимо иметь мин кол-во на складе"
+          type: integer
+          example: 500 
+        inUsingCalc: # get, create, store
+          description: |-
+          type: boolean
+          example: true  
+        isEnabled: # get, create, store
+          description: |-
+          type: boolean
+          example: true
+        controlId: # get, create, store
+          description: |-
+          type: integer
+          example: 1202684          
         createdAt:
-          description: Дата и время типа материала
+          description: Дата и время сохранения
           type: string
           example: "2023-01-01T10:25:37+01"
 
