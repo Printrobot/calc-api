@@ -1,16 +1,5 @@
--- erp_accounting_ownerships
--- erp_accounting_own_firms
--- erp_appointments
--- erp_companies
--- erp_payers
--- erp_customers
--- erp_departments
--- erp_employees
--- erp_messages
 -- erp_messages_groups
--- erp_orders
--- erp_processes
--- erp_statuses
+
 
 готово:
 erp_stores_materials_types_properties
@@ -18,10 +7,22 @@ erp_stores_materials_categories
 erp_stores_materials_types
 erp_stores_materials
 erp_stores
-common_measures - common_units
+common_measures = common_units
 erp_print_colors
 erp_processes_types
 erp_productions
 erp_tools_categories
 erp_tools_machines = cl_machines
 erp_tools_services = cl_services
+erp_accounting_ownerships = cl_types_ownerships
+erp_accounting_own_firms = cl_recipient_companies
+erp_appointments
+erp_companies = сделать как в Битрикс24 (SF) для полной совместимости
+erp_payers = сделать как в 1С для полной совместимости
+erp_customers = сделать как в Битрикс24 для полной совместимости https://dev.1c-bitrix.ru/rest_help/crm/contacts/crm_contact_fields.php
+erp_processes
+erp_orders
+erp_statuses
+erp_employees
+erp_departments
+erp_messages

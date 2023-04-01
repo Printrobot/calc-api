@@ -1,0 +1,349 @@
+openapi: 3.0.3
+info:
+  title: Процессы расчитанных заказов
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: P
+    description: Процессы расчитанных заказов
+
+paths:
+  /v1/processes:
+    get:
+      summary: Процессы расчитанных заказов
+      description: Метод предназначен для получения процессов расчитанных заказов, сохраненного в БД
+      operationId: getProcesses
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список процессов
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Process"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления нового процесса
+      description: Метод предназначен для создания процесса в БД
+      operationId: createProcess
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Process"
+
+      responses:
+        "201":
+          description: Успешно создан процесс
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/processes/{processID}:
+    get:
+      summary: Метод получения процесса по его идентификатору
+      description: Метод предназначен для получения данных процесса из БД
+      operationId: getProcess
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор процесса
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Были получены процессы
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Process"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления процесса
+      description: Метод предназначен для обновления процесса в БД
+      operationId: updateProcess
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор процесса
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Process"
+
+      responses:
+        "204":
+          description: Успешно создан процесс
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления процесса по идентификатору
+      description: Метод предназначен для удаления данных о процессе в БД
+      operationId: deleteProcess
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор процесса
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: процесс был удален
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    Process:
+      type: object
+      description: Процессы заказа. Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        processID: # get, store
+          type: integer
+          example: 4
+        processRootId: # get, store
+          type: integer
+          example: 3
+        parentId: # get, store
+          type: integer
+          example: 1
+        processTypeId: # get, store
+          type: integer
+          example: 10
+        processName: # get, store
+          type: string
+          example: Подготовка бумаги
+        statusId: # get, store
+          type: integer
+          example: 27
+        departmentId: # get, store
+          type: integer
+          example: 1
+        performerId: # get, store
+          type: integer
+          description: 
+          example: 3
+        datetimeDeadline: # get, store
+          type: string
+          description: 
+          example: 2006-04-04 12:44:00
+        processPriority: # get, store
+          type: string
+          example: normal
+        tags: # get, store
+          type: string
+          enum:
+            - first
+            - middle
+            - last
+          description: 
+          example: last
+        isExternal: # get, store
+          type: boolean
+          example: false   
+        controlId: # get, store
+          type: integer
+          example: 1262535
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

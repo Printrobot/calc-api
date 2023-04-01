@@ -1,0 +1,328 @@
+openapi: 3.0.3
+info:
+  title: Сообщения
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: M
+    description: Сообщения
+
+paths:
+  /v1/messages:
+    get:
+      summary: Сообщения
+      description: Метод предназначен для получения сообщений, сохраненного в БД
+      operationId: getMessages
+      tags:
+        - M
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список сообщений
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления нового сообщения
+      description: Метод предназначен для создания сообщения в БД
+      operationId: createMessage
+      tags:
+        - M
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Message"
+
+      responses:
+        "201":
+          description: Успешно создано сообщение
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/messages/{messageId}:
+    get:
+      summary: Метод получения сообщения по его идентификатору
+      description: Метод предназначен для получения сообщения из БД
+      operationId: getMessage
+      tags:
+        - M
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: messageId
+          in: path
+          required: true
+          description: Идентификатор сообщения
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Были получены сообщения
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления сообщения
+      description: Метод предназначен для обновления сообщения в БД
+      operationId: updateMessage
+      tags:
+        - M
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: messageId
+          in: path
+          required: true
+          description: Идентификатор сообщения
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Message"
+
+      responses:
+        "204":
+          description: Успешно создано сообщение
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления сообщения по идентификатору
+      description: Метод предназначен для удаления сообщения в БД
+      operationId: deleteMessage
+      tags:
+        - M
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          description: Идентификатор сообщения
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: сообщение было удалено
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    Message:
+      type: object
+      description: Сообщения компании. Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        messageId: # get, store
+          type: integer
+          example: 20
+        datetimeSent: # get, store
+          type: string
+          example: 16
+        fromUserId: # get, store
+          type: integer
+          example: 234
+        messageType: # get, store
+          type: string
+          enum:
+            - private
+            - common
+            - system
+          example: private
+        messagePriority: # get, store
+          type: string
+          enum:
+            - normal
+            - extra
+          example: normal
+        messageText: # get, store
+          type: string
+          example: Сообщения компании
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

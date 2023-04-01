@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: Должности сотрудников
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: A
+    description: Должности сотрудников
+
+paths:
+  /v1/appointments:
+    get:
+      summary: Метод получения должностей сотрудников
+      description: Метод предназначен для получения списка должностей сотрудников, сохраненного в БД
+      operationId: getAppointments
+      tags:
+        - A
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список должностей сотрудников
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления новой должности сотрудника
+      description: Метод предназначен для создания должности сотрудника в БД
+      operationId: createAppointment
+      tags:
+        - A
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+
+      responses:
+        "201":
+          description: Должность сотрудника успешно создана
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/appointments/{appointmentId}:
+    get:
+      summary: Метод получения должности сотрудника по ее идентификатору
+      description: Метод предназначен для получения данных должности сотрудника из БД
+      operationId: getAppointment
+      tags:
+        - A
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор должности сотрудника
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Была получена должность сотрудника
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления должности сотрудника
+      description: Метод предназначен для обновления должности сотрудника в БД
+      operationId: updateAppointment
+      tags:
+        - A
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор должности сотрудника
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+
+      responses:
+        "204":
+          description: Должность сотрудника успешно создана
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления должности сотрудника по ее идентификатору
+      description: Метод предназначен для удаления данных о должности сотрудника в БД
+      operationId: deleteAppointment
+      tags:
+        - A
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          description: Идентификатор должности сотрудника
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: Должность сотрудника была удалена
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    Appointment:
+      type: object
+      description: Должности сотрудников. Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        appointmentId: # get, store
+          type: integer
+          example: 1
+        appointmentName: # get, store
+          type: string
+          example: Главный бухгалтер
+        isManager: # get, store
+          type: boolean
+          example: false
+        isCurator: # get, store
+          type: boolean
+          description: куратор для клиентов
+          example: true
+        extrachargeGroupId: # get, store
+          type: integer
+          description: ???
+          example: 10
+        isArchived: # get, store
+          type: boolean
+          example: false
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

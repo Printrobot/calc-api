@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  title: Клиенты
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: C
+    description: Клиенты
+
+paths:
+  /v1/customers:
+    get:
+      summary: Метод получения клиентов
+      description: Метод предназначен для получения клиентов, сохраненного в БД
+      operationId: getCustomers
+      tags:
+        - C
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список клиентов
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customers"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления нового клиента
+      description: Метод предназначен для создания клиента в БД
+      operationId: createCustomer
+      tags:
+        - C
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Customers"
+
+      responses:
+        "201":
+          description: Успешно создан клиент
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/customers/{userID}:
+    get:
+      summary: Метод получения клиента по его идентификатору
+      description: Метод предназначен для получения данных клиента из БД
+      operationId: getCustomer
+      tags:
+        - C
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Были получены клиенты
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Customers"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления клиента
+      description: Метод предназначен для обновления клиента в БД
+      operationId: updateCustomer
+      tags:
+        - C
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Customers"
+
+      responses:
+        "204":
+          description: Успешно создан клиент
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления клиента по идентификатору
+      description: Метод предназначен для удаления данных о клиенте в БД
+      operationId: deleteCustomer
+      tags:
+        - C
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: Клиент был удален
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    Customers:
+      type: object
+      description: Клиенты. Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        userID: # get, store
+          type: integer
+          example: 1
+        typeId: # get, store
+          type: integer
+          example: 12
+        customerLetter: # get, store
+          type: string
+          example: 1
+        customerPhones: # get, store
+          type: string
+          example: +1 100 23415678
+        addressId: # get, store
+          type: integer
+          example: +1 100 1231213
+        isMiddleman: # get, store
+          type: boolean
+          example: true
+        departmentId: # get, store
+          type: integer
+          example: 2
+        extrachargeGroupId: # get, store
+          type: integer
+          description: 
+          example: 3
+        lastOrderId: # get, store
+          type: integer
+          description: 
+          example: 1
+        userOwnerId: # get, store
+          type: integer
+          example: 1
+        limitUploadFile: # get, store
+          type: integer
+          description: 
+          example: 10
+        limitCredit: # get, store
+          type: integer
+          example: 120000   
+        isRemoveLayouts: # get, store
+          type: boolean
+          example: false
+        isArchived: # get, store
+          type: boolean
+          description: 
+          example: true
+        isDownloaded: # get, store
+          type: boolean
+          description: 
+          example: 10
+
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

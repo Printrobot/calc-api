@@ -1,0 +1,347 @@
+openapi: 3.0.3
+info:
+  title: Платежные реквизиты компаний клиентов
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+tags:
+  - name: P
+    description: Платежные реквизиты компаний клиентов
+
+paths:
+  /v1/payers:
+    get:
+      summary: Метод получения реквизитов
+      description: Метод предназначен для получения реквизитов, сохраненного в БД
+      operationId: getPayers
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Был получен список реквизитов
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payer"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    post:
+      summary: Метод добавления новых реквизитов компании
+      description: Метод предназначен для создания реквизитов компании в БД
+      operationId: createPayer
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Payer"
+
+      responses:
+        "201":
+          description: Успешно созданы реквизиты компании
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/CreateEntityResult"
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+  /v1/payers/{payerID}:
+    get:
+      summary: Метод получения компании по ее идентификатору
+      description: Метод предназначен для получения данных компании из БД
+      operationId: getPayer
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: payerID
+          in: path
+          required: true
+          description: Идентификатор реквизитов
+          schema:
+            type: integer
+          example: 1000
+        - $ref: "#/components/parameters/attrs"
+
+      responses:
+        "200":
+          description: Были получены реквизиты
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Payer"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "404":
+          $ref: "#/components/responses/Error404Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    put:
+      summary: Метод обновления реквизитов
+      description: Метод предназначен для обновления реквизитов в БД
+      operationId: updatePayer
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/corellationId"
+        - name: payerID
+          in: path
+          required: true
+          description: Идентификатор реквизитов
+          schema:
+            type: integer
+          example: 1000
+
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Payer"
+
+      responses:
+        "204":
+          description: Успешно созданы реквизиты
+        "400":
+          $ref: "#/components/responses/Error400Response"
+        "401":
+          $ref: "#/components/responses/Error401Response"
+        "403":
+          $ref: "#/components/responses/Error403Response"
+        "5XX":
+          $ref: "#/components/responses/Error5XXResponse"
+
+    delete:
+      summary: Метод удаления реквизитов по идентификатору
+      description: Метод предназначен для удаления данных о компании в БД
+      operationId: deletePayer
+      tags:
+        - P
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: payerID
+          in: path
+          required: true
+          description: Идентификатор реквизитов
+          schema:
+            type: integer
+          example: 1000
+
+      responses:
+        "204":
+          description: реквизиты были удалена
+
+components:
+
+  parameters:
+    corellationId: # RFC-6648
+      name: CorellationId
+      in: header
+      schema:
+        type: string
+      example: "02fa8b1f-672503f2-5add1be1-90ab5d42"
+
+    attrs:
+      description: Список атрибутов, которые необходимо вернуть
+      name: attrs
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      example: [attributeName1, attributeName2]
+
+  schemas:
+    AppError:
+      type: object
+      required:
+        - title
+        - detail
+        - request
+        - time
+        - errorTraceId
+      properties:
+        title:
+          description: Краткое описание проблемы, понятное человеку
+          type: string
+          example: "Entity not found"
+        detail:
+          description: Описание конкретно возникшей ошибки, понятное человеку
+          type: string
+          example: "Entity [User] with id = [123456] not found. You MUST use PUT to add entity instead of GET"
+        request:
+          description: Метод и URL запроса
+          type: string
+          example: "PUT /users/123456"
+        time:
+          description: Время возникновения ошибки с точностью до миллисекунд
+          type: string
+          example: "2023-01-01T10:25:37.43+01"
+        errorTraceId:
+          description: Идентификатор конкретного возникновения ошибки
+          type: string
+          example: "5add1be1-90ab5d42-02fa8b1f-672503f2"
+
+    AppErrorAttribute:
+      type: object
+      required:
+        - id
+        - value
+      properties:
+        id:
+          description: Название атрибута, где произошла ошибка
+          type: string
+          example: "attributeName"
+        value:
+          description: Описание ошибки
+          type: string
+          example: "Атрибут не может быть пустым. Указано недопустимое значение атрибута"
+
+    CreateEntityResult:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Идентификатор созданного ресурса
+          type: integer
+          example: 1000
+
+    Payer:
+      type: object
+      description: Компании клиенты. Спецификация https://printrobot.atlassian.net/wiki/spaces/prdsh/pages/54919268
+      properties:
+        payerID: # get, store
+          type: integer
+          example: 1
+        payerName: # get, store
+          type: string
+          example: Главный бухгалтер
+        payerLetter: # get, store
+          type: string
+          example: 1
+        dateAdded: # get, store
+          type: string
+          example: 2023-01-01T10:25:37+01
+        companyPhones: # get, store
+          type: string
+          example: +1 100 1231213
+        patternOwnership: # get, store
+          type: string
+          example: info@comp.com
+        payerHeadType: # get, store
+          type: string
+          example: false
+        payerHeadName: # get, store
+          type: string
+          description: 
+          example: true
+        chiefAccountantName: # get, store
+          type: string
+          description: 
+          example: consumer
+        bankDetailsId: # get, store
+          type: integer
+          example: false   
+        isArchived: # get, store
+          type: boolean
+          example: false
+        isDownloaded: # get, store
+          type: boolean
+          description: куратор для клиентов
+          example: true
+        controlId: # get, store
+          type: integer
+          description: ???
+          example: 10
+
+
+  responses:
+    Error400Response:
+      description: Некорректные входные данные. Возвращается список атрибутов с ошибками
+      content:
+        application/json;charset=UTF-8:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppErrorAttribute"
+
+    Error401Response:
+      description: Пользователь не был аутентифицирован
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error403Response:
+      description: Пользователю с текущими правами доступ отклонён
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error404Response:
+      description: Запрашиваемый ресурт не был найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+    Error5XXResponse:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
