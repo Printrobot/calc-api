@@ -1,0 +1,57 @@
+process:
+  source: \mrcalc\Process
+  name: Офсетная листовая печать
+
+  restrictors:
+    - if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
+
+  validators:
+    - \directories\Machines
+    - 3
+
+  machine:
+    source: \directories\Machines
+    name: machine
+    props:
+      costOneHour: costOneHour 
+      timePreparationMinutes: number  
+      mediaPreparationForSetup: number # листов на одну приладку
+      wasteMediaPerOperationPercent: number // процент на брак от тиража в % (0,12%)
+      sheetsPerHour: number
+      inksGramsPerSqMeters: number // расход краски на кв. метр листа
+
+  materials:
+    - source: \directories\Machines
+      name: material
+      props:
+        costOneKgInk: costOneKgInk 
+
+  properties:
+    - \directories\Machines
+
+  markupInput: # коэфф наценки в % 
+    markupMaterialPercent: number // на материал
+    markupProcessPercent: number  // на стоимость работы
+  
+  ProcessOutput = {
+  materialInkQuantity: number
+  mediaWaste: number // бумаги на приладку (или media)
+  materialCost: number
+  materialPrice: number
+  workTime: number
+  workCost: number
+  workPrice: number
+  totalPrice: number
+  // detail: ProcessDetailOutput
+  printsSetup: number
+  workStyle: string
+  coefWorkStyle: number
+  sameTypesRunList: number
+
+  processDetailOutput = {
+  thiknessMillimeters: number
+  weigthGramsSqMeter: number
+
+
+  algos:
+    - AlgImposition

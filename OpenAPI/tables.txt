@@ -1,6 +1,3 @@
--- erp_messages_groups
-
-
 готово:
 erp_stores_materials_types_properties
 erp_stores_materials_categories
@@ -26,3 +23,4 @@ erp_statuses
 erp_employees
 erp_departments
 erp_messages
+erp_messages_groups
