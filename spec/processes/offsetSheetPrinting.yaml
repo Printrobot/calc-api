@@ -2,56 +2,55 @@ process:
   source: \mrcalc\Process
   name: Офсетная листовая печать
 
-  restrictors:
-    - if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
+  restrictions:
+    # если односторонняя бумага, то свой оборот невозможен. if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
+    # если есть ламинация 1+0, то свой оборот невозможен
 
   validators:
-    - \directories\Machines
-    - 3
+    # - \directories\Machines
+    # - 3
+
+  processInput: # получаем из других процессов в техкарте
+    detailLength: float    # = global.printSheetLength (мм, см, дюйм) 1-10000
+    detailWidth: float    # ширина печатного листа (мм, см, дюйм) 1-10000
+    detailQuantity: integer  # печатных листов 1-100_000_000
 
   machine:
     source: \directories\Machines
+    type: printer/offset
     name: machine
-    props:
-      costOneHour: costOneHour 
-      timePreparationMinutes: number  
-      mediaPreparationForSetup: number # листов на одну приладку
-      wasteMediaPerOperationPercent: number // процент на брак от тиража в % (0,12%)
-      sheetsPerHour: number
-      inksGramsPerSqMeters: number // расход краски на кв. метр листа
+    # props:
+    #   costOneHour: costOneHour 
+    #   timePreparationMinutes: number  
+    #   mediaPreparationForSetup: number # листов на одну приладку
+    #   wasteMediaPerOperationPercent: number // процент на брак от тиража в % (0,12%)
+    #   sheetsPerHour: number
+    #   inksGramsPerSqMeters: number // расход краски на кв. метр листа
 
   materials:
-    - source: \directories\Machines
-      name: material
-      props:
-        costOneKgInk: costOneKgInk 
+    source: \directories\Machines
+    type: media
+    name: material
+      # props:
+      #   costOneKgInk: costOneKgInk # 0.1 - 100_000
 
-  properties:
-    - \directories\Machines
-
-  markupInput: # коэфф наценки в % 
-    markupMaterialPercent: number // на материал
-    markupProcessPercent: number  // на стоимость работы
-  
-  ProcessOutput = {
-  materialInkQuantity: number
-  mediaWaste: number // бумаги на приладку (или media)
-  materialCost: number
-  materialPrice: number
-  workTime: number
-  workCost: number
-  workPrice: number
-  totalPrice: number
-  // detail: ProcessDetailOutput
-  printsSetup: number
-  workStyle: string
-  coefWorkStyle: number
-  sameTypesRunList: number
-
-  processDetailOutput = {
-  thiknessMillimeters: number
-  weigthGramsSqMeter: number
-
+  ProcessOutput:
+    materialInkQuantity: float
+    mediaWaste: integer # бумаги на приладку (или media)
+    materialCost: float # 0.01 - 100_000_000 
+    materialPrice: float # 0.01 - 100_000_000 
+    workTime: integer # минут, для UI 00h:00m
+    workCost: float # 0.01 - 100_000_000 
+    workPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - thiknessMillimeters: float # 0.001 - 1000 
+      - weigthGramsSqMeter:  # 0.01 - 10000
+    printsSetup: integer # к-во приладок на 1 тираж, зависит от оборота
+    workStyle: string # enum
+    coefWorkStyle: float # 0.1 - 100
+    sameTypesRunList: integer # 1 - 100_000
 
   algos:
     - AlgImposition
+    - formulaOffsetPrinting # ф-лы расчета времени, цены, материалов
