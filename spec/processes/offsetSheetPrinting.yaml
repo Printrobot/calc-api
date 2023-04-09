@@ -14,6 +14,9 @@ process:
     detailLength: float    # = global.printSheetLength (мм, см, дюйм) 1-10000
     detailWidth: float    # ширина печатного листа (мм, см, дюйм) 1-10000
     detailQuantity: integer  # печатных листов 1-100_000_000
+    colorsFace: number, # к-во красок лицо (CMYK==4) 1-20
+    colorsBack: number, # к-во красок оборот 0-20
+    types: number # одинаковых видов продукции
 
   machine:
     source: \directories\Machines
@@ -35,7 +38,7 @@ process:
       #   costOneKgInk: costOneKgInk # 0.1 - 100_000
 
   ProcessOutput:
-    materialInkQuantity: float
+    materialInkQuantityGrams: float # расход краски г
     mediaWaste: integer # бумаги на приладку (или media)
     materialCost: float # 0.01 - 100_000_000 
     materialPrice: float # 0.01 - 100_000_000 
@@ -46,10 +49,11 @@ process:
     detail: 
       - thiknessMillimeters: float # 0.001 - 1000 
       - weigthGramsSqMeter:  # 0.01 - 10000
+      - cutsOnDetail: integer # резов по горизонтале и вертикале: схема раскладки на листе 1-500
     printsSetup: integer # к-во приладок на 1 тираж, зависит от оборота
-    workStyle: string # enum
-    coefWorkStyle: float # 0.1 - 100
-    sameTypesRunList: integer # 1 - 100_000
+    workStyle: string # тип переворота 
+    coefWorkStyle: float # 0.1 - 100 коэф. сложности печати
+    sameTypesRunList: integer # кол-во повторов одинаковых тиражей 1 - 100_000 
 
   algos:
     - AlgImposition

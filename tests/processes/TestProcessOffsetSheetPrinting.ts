@@ -31,7 +31,7 @@ const input: ProcessPropsInput = {
 }
 
 const outputExpected: ProcessOutput = {
-  materialInkQuantity: 599.4,
+  materialInkQuantityGrams: 599.4,
   mediaWaste: 110, 
   materialCost: 719.28,
   materialPrice: 791.21,

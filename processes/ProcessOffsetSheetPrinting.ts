@@ -41,7 +41,7 @@ export type ProcessPropsInput = {
 }
 
 export type ProcessOutput = {
-  materialInkQuantity: number
+  materialInkQuantityGrams: number
   mediaWaste: number // бумаги на приладку (или media)
   materialCost: number
   materialPrice: number
@@ -63,7 +63,7 @@ export type ProcessDetailOutput = {
 
 export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const result: ProcessOutput = {
-    materialInkQuantity: -9999999, // расход краски
+    materialInkQuantityGrams: -9999999, // расход краски
     mediaWaste: -99999,
     materialCost: -9999999,
     materialPrice: -9999999,
@@ -100,10 +100,10 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   result.mediaWaste = (machine.mediaPreparationForSetup + process.detailQuantity * machine.wasteMediaPerOperationPercent) *
     result.coefWorkStyle * result.printsSetup;
 
-  result.materialInkQuantity = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
-    result.coefWorkStyle * result.printsSetup * machine.inksGramsPerSqMeters / 1e6; // грамм на тираж 
+  result.materialInkQuantityGrams = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
+    result.coefWorkStyle * result.printsSetup * machine.inksGramsPerSqMeters / 1e6; // грамм на весь тираж 
   
-  result.materialCost = result.materialInkQuantity  * material.costOneKgInk / 1000;
+  result.materialCost = result.materialInkQuantityGrams  * material.costOneKgInk / 1000;
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   result.materialPrice = roundDigits(result.materialPrice, 2);
  

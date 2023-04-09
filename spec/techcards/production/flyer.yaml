@@ -6,14 +6,15 @@ techCard: # офсетная печать листовок, ламинация, 
     - source: ./processes/PreparingLayout # 01 - Подготовка макета
       name: Подготовка макета
 
-    - source: ./processes/PaperPreparation # 02 - Подготовка бумаги
-      name: Работа
+    parallel_processes: 
+      - source: ./processes/PaperPreparation # 02 - Подготовка бумаги
+        name: Работа
 
-    - source: ./processes/CuttingDetail # 03 - Резка большой бумаги в формат для печати
-      name: Резка в печатный формат
+      - source: ./processes/CuttingDetail # 03 - Резка большой бумаги в формат для печати
+        name: Резка в печатный формат
 
-    - source: ./processes/CTP # 04 - Изготовление офсетных форм для печати
-      name: Изготовление офсетных форм
+      - source: ./processes/CTP # 04 - Изготовление офсетных форм для печати
+        name: Изготовление офсетных форм
 
     - source: ./processes/OffsetSheetPrinting # 05 - Офсетная листовая печать
       name: Офсетная листовая печать
