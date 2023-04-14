@@ -1,0 +1,44 @@
+process:
+  source: \mrcalc\Process
+  name: Рулонная ламинация листов с двух или с одной стороны
+
+  # restrictions:
+ 
+  # validators:
+    
+  algos:
+    - formula # ф-лы расчета времени, цены, материалов
+
+  processInput: # получаем из других процессов в техкарте
+    detailLength: float    # длинна  (мм, см, дюйм) 1-10000
+    detailWidth: float    # ширина  (мм, см, дюйм) 1-10000
+    detailQuantity: integer  # к-во 1-100_000_000
+    detailWeigthGramsSqMeter: number # вес грамм кв метра детали
+    detailThiknessMillimeters: number # толщина детали
+    laminationSides: number # 1 или 2 стороны надо заламинировать
+
+  machine:
+    source: \directories\Machines
+    type: lamination
+    name: machine
+
+  materials:
+    source: \directories\Machines
+    type: media
+    name: material
+      # props:
+      #   costGlueOneKg: costGlueOneKg # 0.1 - 100_000
+
+  processOutput:
+    materialQuantity: float # расход 
+    materialWaste: integer # на приладку
+    materialCost: float # 0.01 - 100_000_000 
+    materialPrice: float # 0.01 - 100_000_000 
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - thiknessMillimeters: float # 0.001 - 1000 
+      - weigthGramsSqMeter:  # 0.01 - 10000
+    

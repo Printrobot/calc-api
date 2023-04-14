@@ -20,9 +20,9 @@ const input: ProcessPropsInput = {
 };
 
 const outputExpected: ProcessOutput = {
-  workTime: 0.086,
-  workCost: 103.2,
-  workPrice: 113.52,
+  processTime: 0.086,
+  processCost: 103.2,
+  processPrice: 113.52,
   totalPrice: 113.52,
   detail: {
     cutsOnDetail: 2,

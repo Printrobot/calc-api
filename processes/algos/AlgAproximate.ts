@@ -6,7 +6,7 @@
 
 export type AlgInputAprox = {
   detailRunList: number,
-  costDigitalPrintingArray: QuantityCost[]
+  costDigitalPrinting: QuantityCost[]
 }
 
 export type QuantityCost = {
@@ -28,10 +28,11 @@ export function AlgAproximate(params: AlgInputAprox): AlgOutput {
     costFound: 26 // для тестов mock
   }
 
-  let arr = algInput.costDigitalPrintingArray;
+  let arr = algInput.costDigitalPrinting;
 
   if(!arr || !arr.length) {
-    return console.log("Таблица 'тираж-цена печати' пустая");
+    console.log("Ошибка! Таблица 'тираж-цена печати' пустая.");
+    return result;
   }
 
   sortByRunList(arr); // отсортировали по возрастанию тиражей
@@ -78,12 +79,11 @@ export function AlgAproximate(params: AlgInputAprox): AlgOutput {
 
 let algInput: AlgInputAprox = {
   detailRunList: 250,
-  costDigitalPrintingArray: [
-    // {"runList": 5, "cost": 36},
-    // {"runList": 10, "cost": 32},
-    // {"runList": 20, "cost": 30},
-    // {"runList": 30, "cost": 20}], 
-  ]
+  costDigitalPrinting: [
+    {"runList": 5, "cost": 36},
+    {"runList": 10, "cost": 32},
+    {"runList": 20, "cost": 30},
+    {"runList": 30, "cost": 20}], 
 }
 
 let costFound = AlgAproximate(algInput).costFound;

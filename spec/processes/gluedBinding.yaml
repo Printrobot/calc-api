@@ -1,0 +1,43 @@
+process:
+  source: \mrcalc\Process
+  name: Брошюровка на клей - КБС (клеевое бесшовное скрепление)
+
+  # restrictions:
+ 
+  # validators:
+    
+  algos:
+    - formula # ф-лы расчета времени, цены, материалов
+
+  processInput: # получаем из других процессов в техкарте
+    detailLength: float    # длинна блока (мм, см, дюйм) 1-10000
+    detailWidth: float    # ширина блока (мм, см, дюйм) 1-10000
+    detailQuantity: integer  # блоков 1-100_000_000
+    detailThiknessMillimeters: number, # толщина блока
+
+  machine:
+    source: \directories\Machines
+    type: binding\glue
+    name: machine
+
+  materials:
+    source: \directories\Machines
+    type: media
+    name: material
+      # props:
+      #   costGlueOneKg: costGlueOneKg # 0.1 - 100_000
+
+  processOutput:
+    glueConsumptionKg: float # расход клея
+    detailsPreparationForSetup: integer # бумаги на приладку (или media)
+    materialCost: float # 0.01 - 100_000_000 
+    materialPrice: float # 0.01 - 100_000_000 
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - thiknessMillimeters: float # 0.001 - 1000 
+      - weigthGramsSqMeter:  # 0.01 - 10000
+      - cutsOnDetail: integer # резов по горизонтале и вертикале: схема раскладки на листе 1-500
+    

@@ -1,0 +1,38 @@
+process:
+  source: \mrcalc\Process
+  name: Вывод форм для офсетной печати Computer-to-Plate
+
+  # restrictions:
+
+  # validators:
+     
+  algos:
+    - AlgPlatesCalc
+    - formula # ф-лы расчета времени, цены, материалов
+
+
+  processInput: # получаем из других процессов в техкарте
+    productColorsFace: number, # данные из UI, выбор клиента
+    productColorsBack: number
+    platesQuantity: number  # global.quantityForms из алгоритма в процессе офсетная печать
+    workStyle: string, # app\src\mrlib\PrintFormat.php function getAvalibleWorkStyles(array $props)
+  
+  machine:
+    source: \directories\Machines
+    type: printer/offset
+    name: machine
+
+  materials:
+    source: \directories\Machines
+    type: plates
+    name: material
+
+  processOutput:
+    platesQuantity: number # 1 - 100_000
+    mediaWaste: integer # бумаги на приладку (или media)
+    materialCost: float # 0.01 - 100_000_000 
+    materialPrice: float # 0.01 - 100_000_000 
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000

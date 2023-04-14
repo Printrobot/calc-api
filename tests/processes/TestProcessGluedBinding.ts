@@ -29,9 +29,9 @@ const outputExpected: ProcessOutput = {
   glueConsumptionKg: 2.851,
   materialCost: 2851,
   materialPrice: 3136.1,
-  workTime: 2.306,
-  workCost: 1452.78,
-  workPrice: 1598.06,
+  processTime: 2.306,
+  processCost: 1452.78,
+  processPrice: 1598.06,
   totalPrice: 4734.16,
 };
 

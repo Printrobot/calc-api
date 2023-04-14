@@ -33,17 +33,17 @@ const input: ProcessPropsInput = {
 }
 
 const outputExpected: ProcessOutput = {
-  materialInkQuantity: 4725,
+  materialInkQuantityrams: 4725,
   mediaWaste: 50, 
   materialCost: 28350,
   materialPrice: 31185,
-  workTime: 2.5,
-  workCost: 12500,
-  workPrice: 13750,
+  processTime: 2.5,
+  processCost: 12500,
+  processPrice: 13750,
   totalPrice: 44935,
   printsSetup: 1,
   workStyle: "WorkAndTurn",
-  coefWorkStyle: 2,
+  complexityFactor: 2,
   sameTypesRunList: 1,
 }
 

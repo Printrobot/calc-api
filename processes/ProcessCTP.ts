@@ -37,9 +37,9 @@ export type ProcessOutput = {
   platesQuantity: number
   materialCost: number
   materialPrice: number
-  workTime: number
-  workCost: number
-  workPrice: number
+  processTime: number
+  processCost: number
+  processPrice: number
   totalPrice: number
 }
 
@@ -48,9 +48,9 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     platesQuantity: -9999999,
     materialCost: -9999999,
     materialPrice: -9999999,
-    workTime: -9999999,
-    workCost: -9999999,
-    workPrice: -9999999,
+    processTime: -9999999,
+    processCost: -9999999,
+    processPrice: -9999999,
     totalPrice: -9999999,
   };
 
@@ -72,13 +72,13 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   result.materialPrice = roundDigits(result.materialPrice, 2);
   // result.platesQuantity = process.platesQuantity;
 
-  result.workTime = machine.timePreparationMinutes / 60 + process.platesQuantity / (machine.platesPerHour);
-  result.workTime = roundDigits(result.workTime, 3);  // часов
+  result.processTime = machine.timePreparationMinutes / 60 + process.platesQuantity / (machine.platesPerHour);
+  result.processTime = roundDigits(result.processTime, 3);  // часов
 
-  result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
-  result.workPrice = roundDigits(result.workCost * (markup.markupProcessPercent / 100 + 1), 2);
+  result.processCost = roundDigits(result.processTime * machine.costOneHour, 2);
+  result.processPrice = roundDigits(result.processCost * (markup.markupProcessPercent / 100 + 1), 2);
 
-  result.totalPrice = result.workPrice + result.materialPrice;
+  result.totalPrice = result.processPrice + result.materialPrice;
 
   return result;
 }

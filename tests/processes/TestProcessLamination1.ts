@@ -38,9 +38,9 @@ const outputExpected: ProcessOutput = {
   materialWaste: 1.02,
   materialCost: 7208.16,
   materialPrice: 7928.98,
-  workTime: 0.529,
-  workCost: 1957.3,
-  workPrice: 2153.03,
+  processTime: 0.529,
+  processCost: 1957.3,
+  processPrice: 2153.03,
   totalPrice: 10082.01,
   detail: {
     thiknessMillimeters: 0.18,

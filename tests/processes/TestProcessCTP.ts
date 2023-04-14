@@ -23,9 +23,9 @@ const outputExpected: ProcessOutput = {
   platesQuantity: 16,
   materialCost: 2400,
   materialPrice: 2640,
-  workTime: 1.083,
-  workCost: 682.29,
-  workPrice: 750.52,
+  processTime: 1.083,
+  processCost: 682.29,
+  processPrice: 750.52,
   totalPrice: 3390.52,
 };
 

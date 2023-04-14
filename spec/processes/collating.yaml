@@ -1,0 +1,32 @@
+process:
+  source: \mrcalc\Process
+  name: Листоподбор
+
+  # restrictions:
+  # validators:
+  algos:
+    - formula # ф-лы расчета времени, цены, материалов
+
+
+  processInput: # получаем из других процессов в техкарте
+    detailQuantity: integer  # печатных листов 1-100_000_000
+    detailTypes: number # в одном подборе листов
+    detailWidth: float    # ширина печатного листа (мм, см, дюйм) 1-10000
+    detailLength: float    # = global.printSheetLength (мм, см, дюйм) 1-10000
+    detailHeigth: number # толщина одного листа (мм)
+
+  machine:
+    source: \directories\Machines
+    type: collator
+    name: machine
+
+  processOutput:
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - width: number,
+      - length: number,
+      - heigth: number # высота детали - пачка подобранных листов
+ 

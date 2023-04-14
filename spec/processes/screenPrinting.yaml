@@ -1,16 +1,14 @@
 process:
   source: \mrcalc\Process
-  name: Офсетная листовая печать
+  name: Трафаретная печать (шелкография) УФ красками или лаком.
 
-  restrictions:
-    # если односторонняя бумага, то свой оборот невозможен. if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
-    # если есть ламинация 1+0, то свой оборот невозможен
-
+  # restrictions:
+ 
   # validators:
     
   algos:
     - AlgImposition
-    - formulaOffsetPrinting # ф-лы расчета времени, цены, материалов
+    - formulaScreenPrinting # ф-лы расчета времени, цены, материалов
 
   processInput: # получаем из других процессов в техкарте
     detailLength: float    # = global.printSheetLength (мм, см, дюйм) 1-10000
@@ -22,7 +20,7 @@ process:
 
   machine:
     source: \directories\Machines
-    type: printer/offset
+    type: printer/screenprinting
     name: machine
     # props:
     #   costOneHour: costOneHour 
@@ -51,7 +49,6 @@ process:
     detail: 
       - thiknessMillimeters: float # 0.001 - 1000 
       - weigthGramsSqMeter:  # 0.01 - 10000
-      - cutsOnDetail: integer # резов по горизонтале и вертикале: схема раскладки на листе 1-500
     printsSetup: integer # к-во приладок на 1 тираж, зависит от оборота
     workStyle: string # тип переворота 
     complexityFactor: float # 0.1 - 100 коэф. сложности печати

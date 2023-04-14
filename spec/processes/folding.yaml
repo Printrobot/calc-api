@@ -1,0 +1,30 @@
+process:
+  source: \mrcalc\Process
+  name: Фальцовка листа. Паралл-ые и перпенд-ые фальцы
+
+  restrictions:
+
+  # validators:
+    
+  # algos:
+ 
+  processInput: # получаем из других процессов в техкарте
+    foldingParallel: number # фальцев парал
+    foldingPerpendicular: number # фальцев перпенд   detailQuantity: integer  # печатных листов 1-100_000_000
+    detailQuantity: integer  # печатных листов 1-100_000_000
+    types: number # одинаковых видов продукции
+
+  machine:
+    source: \directories\Machines
+    type: folding
+    name: machine
+
+  processOutput:
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - width: float # в сложеном виде 0.1 - 1000 
+      - length: float  # в сложеном виде 0.1 - 10000
+ 

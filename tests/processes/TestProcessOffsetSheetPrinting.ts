@@ -35,13 +35,13 @@ const outputExpected: ProcessOutput = {
   mediaWaste: 110, 
   materialCost: 719.28,
   materialPrice: 791.21,
-  workTime: 0.801,
-  workCost: 3220.02,
-  workPrice: 3542.02,
+  processTime: 0.801,
+  processCost: 3220.02,
+  processPrice: 3542.02,
   totalPrice: 4333.23,
   printsSetup: 1,
   workStyle: "WorkAndTurn",
-  coefWorkStyle: 2,
+  complexityFactor: 2,
   sameTypesRunList: 1,
 }
 

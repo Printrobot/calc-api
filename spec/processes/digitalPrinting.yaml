@@ -1,15 +1,13 @@
 process:
   source: \mrcalc\Process
-  name: Офсетная листовая печать
+  name: Цифровая листовая печать
 
-  restrictions:
-    # если односторонняя бумага, то свой оборот невозможен. if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
-    # если есть ламинация 1+0, то свой оборот невозможен
-
+  # restrictions:
   # validators:
     
   algos:
     - AlgImposition
+    - AlgAproximate
     - formulaOffsetPrinting # ф-лы расчета времени, цены, материалов
 
   processInput: # получаем из других процессов в техкарте
@@ -22,7 +20,7 @@ process:
 
   machine:
     source: \directories\Machines
-    type: printer/offset
+    type: printer/digital
     name: machine
     # props:
     #   costOneHour: costOneHour 

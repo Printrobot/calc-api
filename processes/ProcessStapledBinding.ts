@@ -41,9 +41,9 @@ export type ProcessOutput = {
   wireConsumptionMeters: number
   materialCost: number
   materialPrice: number
-  workTime: number
-  workCost: number
-  workPrice: number
+  processTime: number
+  processCost: number
+  processPrice: number
   totalPrice: number
 }
 
@@ -52,9 +52,9 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     wireConsumptionMeters: -9999999,
     materialCost: -9999999,
     materialPrice: -9999999,
-    workTime: -9999999,
-    workCost: -9999999,
-    workPrice: -9999999,
+    processTime: -9999999,
+    processCost: -9999999,
+    processPrice: -9999999,
     totalPrice: -9999999,
   };
 
@@ -64,6 +64,8 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   const machine = input.machine;
   const markup = input.markup;
 
+  // detailsPreparationForSetup: integer # блоков на приладку 
+
   result.wireConsumptionMeters = machine.wireCentimetersPerStaple * product.detailQuantity / 100; // м
   result.wireConsumptionMeters =roundDigits(result.wireConsumptionMeters, 3)
 
@@ -71,13 +73,13 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   result.materialPrice = roundDigits(result.materialPrice, 2);
 
-  result.workTime = machine.timePreparationMinutes / 60 + product.detailQuantity / machine.operationsPerHour;
-  result.workTime = roundDigits(result.workTime, 3);  // часов
+  result.processTime = machine.timePreparationMinutes / 60 + product.detailQuantity / machine.operationsPerHour;
+  result.processTime = roundDigits(result.processTime, 3);  // часов
 
-  result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
-  result.workPrice = roundDigits(result.workCost * (markup.markupProcessPercent / 100 + 1), 2);
+  result.processCost = roundDigits(result.processTime * machine.costOneHour, 2);
+  result.processPrice = roundDigits(result.processCost * (markup.markupProcessPercent / 100 + 1), 2);
 
-  result.totalPrice = roundDigits(result.workPrice + result.materialPrice, 2);
+  result.totalPrice = roundDigits(result.processPrice + result.materialPrice, 2);
 
   return result;
 }

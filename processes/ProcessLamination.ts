@@ -49,9 +49,9 @@ export type ProcessOutput = {
   materialWaste: number
   materialCost: number
   materialPrice: number
-  workTime: number
-  workCost: number
-  workPrice: number
+  processTime: number
+  processCost: number
+  processPrice: number
   totalPrice: number
   detail: ProcessDetailOutput
 }
@@ -67,9 +67,9 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     materialWaste: -9999999,
     materialCost: -9999999,
     materialPrice: -9999999,
-    workTime: -9999999,
-    workCost: -9999999,
-    workPrice: -9999999,
+    processTime: -9999999,
+    processCost: -9999999,
+    processPrice: -9999999,
     totalPrice: -9999999,
     detail: {
       thiknessMillimeters: -9999999,
@@ -90,14 +90,14 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   result.materialPrice = roundDigits(result.materialPrice, 2);
 
-  result.workTime = machine.timePreparationMinutes / 60 + (process.detailLength / (1000 * machine.sidesPerOperation)) *
+  result.processTime = machine.timePreparationMinutes / 60 + (process.detailLength / (1000 * machine.sidesPerOperation)) *
     (process.detailQuantity / machine.metersPerHour);
-  result.workTime = roundDigits(result.workTime, 3);
+  result.processTime = roundDigits(result.processTime, 3);
 
-  result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
-  result.workPrice = roundDigits(result.workCost * (markup.markupProcessPercent / 100 + 1), 2);
+  result.processCost = roundDigits(result.processTime * machine.costOneHour, 2);
+  result.processPrice = roundDigits(result.processCost * (markup.markupProcessPercent / 100 + 1), 2);
 
-  result.totalPrice = result.workPrice + result.materialPrice;
+  result.totalPrice = result.processPrice + result.materialPrice;
 
   // меняем толщину и вес детали: 
   result.detail.thiknessMillimeters = process.detailThiknessMillimeters +

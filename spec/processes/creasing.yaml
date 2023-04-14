@@ -1,0 +1,25 @@
+process:
+  source: \mrcalc\Process
+  name: Биговка
+
+  # restrictions:
+  # validators:
+  algos:
+    - formula # ф-лы расчета времени, цены, материалов
+
+  processInput: # получаем из других процессов в техкарте
+    quantity: number # тираж продукции, данные из UI, выбор клиента
+    creasingQuantity: number # бигов на изделии данные из UI
+    types: number # одинаковых видов продукции данные из UI
+
+  machine:
+    source: \directories\Machines
+    type: creasing
+    name: machine
+
+  processOutput:
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+  

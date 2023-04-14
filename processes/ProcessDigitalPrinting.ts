@@ -46,14 +46,14 @@ export type ProcessOutput = {
   mediaWaste: number // бумаги на приладку (или media)
   // materialCost: number
   // materialPrice: number
-  workTime: number
-  workCost: number
-  workPrice: number
+  processTime: number
+  processCost: number
+  processPrice: number
   totalPrice: number
   // detail: ProcessDetailOutput
   printsSetup: number
   workStyle: string
-  coefWorkStyle: number
+  complexityFactor: number
   sameTypesRunList: number
   cutsOnDetail: number
 }
@@ -69,13 +69,13 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
     mediaWaste: -99999,
     // materialCost: -9999999,
     // materialPrice: -9999999,
-    workTime: -9999999,
-    workCost: -9999999,
-    workPrice: -9999999,
+    processTime: -9999999,
+    processCost: -9999999,
+    processPrice: -9999999,
     totalPrice: -9999999,
     printsSetup: -9999999,
     workStyle: "stringNull",
-    coefWorkStyle: -9999999,
+    complexityFactor: -9999999,
     sameTypesRunList: -9999999,
     cutsOnDetail: -9999999,
     // detail: {
@@ -98,17 +98,17 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   let algInputAprox: AlgInputAprox = {
     detailRunList: -999999,
     // costDigitalPrinting: new Map([[10, 32], [50, 28], [100, 20]]),
-    costDigitalPrintingArray: [{"runList": 10, "cost": 32},{"runList": 50, "cost": 28}],
+    costDigitalPrinting: [{"runList": 10, "cost": 32},{"runList": 50, "cost": 28}],
   };
 
   result.printsSetup = AlgImposition(algInput).printsSetup; //к-во приладок на 1 тираж, зависит от оборота 
   result.workStyle = AlgImposition(algInput).workStyle;
-  result.coefWorkStyle = AlgImposition(algInput).coefWorkStyle;
+  result.complexityFactor = AlgImposition(algInput).complexityFactor;
   result.sameTypesRunList = AlgImposition(algInput).sameTypesRunList; // Пока не используем
   result.cutsOnDetail = AlgImposition(algInput).cutsOnDetail;
 
   result.mediaWaste = (machine.mediaPreparationForSetup + process.detailQuantity * machine.wasteMediaPerOperationPercent) *
-    result.coefWorkStyle * result.printsSetup;
+    result.complexityFactor * result.printsSetup;
   result.mediaWaste = roundDigits(result.mediaWaste, 0);
 
   // result.materialInkQuantity = process.detailLength * process.detailWidth * (process.detailQuantity + result.mediaWaste) * 
@@ -118,15 +118,15 @@ export function ProcessCalc(input: ProcessPropsInput): ProcessOutput {
   // result.materialPrice = result.materialCost * (markup.markupMaterialPercent / 100 + 1);
   // result.materialPrice = roundDigits(result.materialPrice, 2);
  
-  result.workTime = machine.timePreparationMinutes / 60 + process.detailQuantity / (machine.sheetsPerHour);
-  result.workTime = roundDigits(result.workTime, 3);  // часов
+  result.processTime = machine.timePreparationMinutes / 60 + process.detailQuantity / (machine.sheetsPerHour);
+  result.processTime = roundDigits(result.processTime, 3);  // часов
 
-  // result.workCost = roundDigits(result.workTime * machine.costOneHour, 2);
+  // result.processCost = roundDigits(result.processTime * machine.costOneHour, 2);
   let costFound = AlgAproximate(algInputAprox).costFound;
-  result.workCost = roundDigits(costFound, 2);
-  result.workPrice = roundDigits(result.workCost * (markup.markupProcessPercent / 100 + 1), 2);
+  result.processCost = roundDigits(costFound, 2);
+  result.processPrice = roundDigits(result.processCost * (markup.markupProcessPercent / 100 + 1), 2);
 
-  result.totalPrice = roundDigits((result.workPrice), 2);
+  result.totalPrice = roundDigits((result.processPrice), 2);
 
   return result;
 }

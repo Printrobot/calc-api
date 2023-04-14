@@ -30,9 +30,9 @@ const outputExpected: ProcessOutput = {
   wireConsumptionMeters: 297,
   materialCost: 14850,
   materialPrice: 16335,
-  workTime: 3.417,
-  workCost: 2050.2,
-  workPrice: 2255.22,
+  processTime: 3.417,
+  processCost: 2050.2,
+  processPrice: 2255.22,
   totalPrice: 18590.22,
 };
 

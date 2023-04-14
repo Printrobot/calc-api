@@ -1,0 +1,32 @@
+process:
+  source: \mrcalc\Process
+  name: Резка
+
+  restrictions:
+    # если односторонняя бумага, то свой оборот невозможен. if(!media.sidesEqual) {process.printing.workstyle <> WorkAndTurn}
+    # если есть ламинация 1+0, то свой оборот невозможен
+
+  # validators:
+  algos:
+    - formula # ф-лы расчета времени, цены, материалов
+
+  processInput: # получаем из других процессов в техкарте
+    detailQuantity: number  # кол-во полуфабирката до резки
+    detailThiknessMillimeters: number # толщина детали
+    cutsOnOneDetail: number # резов на листе, детали, сторон подрезки
+
+  machine:
+    source: \directories\Machines
+    type: cutting
+    name: machine
+
+  processOutput:
+    processTime: integer # минут, для UI 00h:00m
+    processCost: float # 0.01 - 100_000_000 
+    processPrice: float # 0.01 - 100_000_000 
+    totalPrice: float # 0.01 - 100_000_000
+    detail: 
+      - length: number # меняем ширину и длину детали для передачи в следующий процес: 
+      - width: number,
+      - cutsOnDetail: integer # резов по горизонтале и вертикале: схема раскладки на листе 1-500
+   
